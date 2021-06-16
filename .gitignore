@@ -1,0 +1,9 @@
+﻿pawno/*
+*.exe
+*.dll
+*.so
+plugins/*
+server_log.txt
+LICENSE
+samp-license.txt
+server-readme.txt

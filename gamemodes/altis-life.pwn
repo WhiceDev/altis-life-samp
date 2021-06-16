@@ -23,15 +23,39 @@ new startTime;
 // Defines für einfachere Handhabung
 #define function%0(%1) forward%0(%1); public%0(%1)
 #define SPD ShowPlayerDialog
+#define SCM SendClientMessage
+#define KickPlayer(%0) SetTimerEx("KickThePlayer", 250, 0, "i", %0)
 
+// BCrypt Kosten
+#define BCRYPT_COST 14
 
+// Dialog Enum
 enum {
 	D_LOGIN = 1,
+	D_REGISTER
 }
 
+enum E_PLAYER {
+	pDBID,
+	pName[MAX_PLAYER_NAME + 1],
+	pSalt[11]
+};
+new pInfo[MAX_PLAYERS][E_PLAYER];
+
+// Farben definieren
+#define COLOR_FAIL 0xFF0000FF
+#define COLOR_WHITE 0xFFFFFFFF
+#define COLOR_RED 0xFF0000FF
+#define COLOR_BLUE 0x0000FFFF
+#define COLOR_CYAN 0x00FFFFFF
+#define COLOR_PINK 0xFF00FFFF
+#define COLOR_YELLOW 0xFFFF00FF
+#define COLOR_GREEN 0x00FF00FF
 
 // Inline Farben definieren
 #define D_WHITE "{FFFFFF}"
+#define D_GREEN "{00FF00}"
+#define D_RED "{FF0000}"
 
 
 
@@ -84,13 +108,15 @@ public OnPlayerConnect(playerid) {
 	if(IsPlayerNPC(playerid)) return true;
 	
 	// Erstellen benötiger lokaler Variablen
-	new query[256], pName[MAX_PLAYER_NAME + 1];
+	new query[256], playerName[MAX_PLAYER_NAME + 1];
 	
 	// Auslesen des Spielernamens
-	GetPlayerName(playerid, pName, sizeof(pName));
+	GetPlayerName(playerid, playerName, sizeof(playerName));
+	
+	format(pInfo[playerid][pName], sizeof(playerName), playerName);
 	
 	// Überprüfe ob der Spieler in der Datenbank existiert
-	mysql_format(dbhandle, query, sizeof(query), "SELECT `id` FROM `users` WHERE `name` = '%e' LIMIT 1", pName);
+	mysql_format(dbhandle, query, sizeof(query), "SELECT `id` FROM `users` WHERE `name` = '%e' LIMIT 1", playerName);
 	mysql_tquery(dbhandle, query, "AccountCheck", "d", playerid);
 	return true;
 }
@@ -110,10 +136,58 @@ function AccountCheck(playerid) {
 	// Überprüfe ob Reihen im Cache sind
 	if(cache_num_rows()) {
 	    // Account mit dem Namen existiert bereits
-		SPD(playerid, D_LOGIN, DIALOG_STYLE_INPUT, D_WHITE"Einloggen", D_WHITE"Moin, logge dich bitte ein um spielen zu können:", D_WHITE"Einloggen", D_WHITE"Abbrechen");
+		SPD(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, D_WHITE"Einloggen", D_WHITE"Moin, logge dich bitte ein um spielen zu können:", D_WHITE"Einloggen", D_WHITE"Abbrechen");
 	} else {
 	    // Kein Account mit dem Namen registriert
+	    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
 	}
+}
+
+/*
+ *
+ *	Dieses Callback wird aufgerufen, wenn ein Spieler auf irgendeine Weise auf ein mit ShowPlayerDialog erzeugtes Dialogfenster antwortet.
+ *
+ *  @params playerid	Die ID des Spielers
+ *  @params dialogid	Die ID des Dialogs, die in ShowPlayerDialog angegeben wurde.
+ *  @params response	1 wenn der linke Button gedrückt wurde, 0 für den Linken (Wenn nur ein Knopf aktiv ist, immer 1)
+ *  @params listitem	Die ID der ausgewählten Zeile, wenn DIALOG_STYLE_LIST benutzt wird (beginnend bei 0)
+ *  @params inputtext		Der Text, der eingegeben wurde, wenn DIALOG_STYLE_INPUT oder DIALOG_STYLE_PASSWORD benutzt wird.
+ 							Ebenso enthällt es den Text des ausgewählten Listitems, wenn DIALOG_STYLE_LIST genutzt wird.
+ *  @return 0 - Erlaubt das Einbinden von Filterscripts, 1 - Verhindert das Einbinden von Filterscripts
+ *
+ */
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+	switch(dialogid) {
+	    case D_LOGIN: {
+	    }
+	    case D_REGISTER: {
+	        if(!response) {
+				// Auf 'Abbrechen' gedrückt
+				SCM(playerid, COLOR_WHITE, "=> Ohne Account kannst du bei uns leider nicht spielen..");
+				KickPlayer(playerid);
+				return true;
+			} else {
+			    // Auf 'Registrieren' gedrückt
+				if(strlen(inputtext) < 6 || strlen(inputtext) > 200) {
+				    // Passwort ist zu kurz oder zu lang (6-200)
+				    SCM(playerid, COLOR_RED, "[FEHLER]: Passwort muss zwischen 6 und 200 Zeichen besitzen!");
+				    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
+				    return true;
+				}
+				// Passwort ist nach Vorgaben
+				
+				// Generiere zufälligen Salt
+				new salt[11];
+				for(new i; i < 10; i++) {
+	                salt[i] = random(79) + 47;
+	            }
+	            salt[10] = 0;
+				bcrypt_hash(inputtext, BCRYPT_COST, "OnPasswordHashed", "d", playerid);
+				return true;
+			}
+	    }
+	}
+	return false;
 }
 
 
@@ -189,11 +263,12 @@ stock CreateDatabaseTables() {
  *
  */
 stock CreateUserTable() {
-    new query[420];
+    new query[500];
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
+		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
 		PRIMARY KEY (`id`) USING BTREE\
 	)\
 	COMMENT='all user informations'\

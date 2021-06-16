@@ -1,6 +1,8 @@
 # Vorhaben
 Hier wird im Folgenden ein SAMP (San Andreas Multiplayer) Server entstehen, der sich am bereits bestehenden Spielkonzept von dem bekannten Arma 3 Modus 'Altis Life' orientiert.
 
+Volle Dokumentation dazu: https://breadfish.de/blog/blog-entry-list/42-san-andreas-multiplayer-samp-server-im-stil-von-altis-life/
+
 
 ### Verwendete Plugins:
 - MySQL R41-4 https://github.com/pBlueG/SA-MP-MySQL/releases

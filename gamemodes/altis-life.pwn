@@ -19,6 +19,13 @@ new startTime;
 
 main() {}
 
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn der Gamemode geladen wird.
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+*/
 public OnGameModeInit() {
 	// Starte das Benchmarking
 	startTime = GetTickCount();
@@ -29,6 +36,13 @@ public OnGameModeInit() {
 	return true;
 }
 
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn der Gamemode beendet wird.
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+*/
 public OnGameModeExit() {
 	// Schließen der Datenbankverbindung
 	mysql_close(dbhandle);
@@ -61,4 +75,28 @@ stock mysqlConnect() {
 		mysql_error(error, sizeof(error), dbhandle);
 		printf("[FEHLER] Datenbankverbindung fehlgeschlagen #%d '%s'", errno, error);
 	}
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Fehler bei der Verarbeitung einer MySQL-Abfrage auftritt.
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ * 	@param	errorid		ID des Fehlers
+ * 	@param  error 		Fehlermeldung
+ *  @param  callback    Name des aufgerufenen Callbacks (leer wenn keins angegeben)
+ *  @param  query       Die Ausgeführte Abfrage
+ *  @param  handle      Die Datenbankverbindung
+ *
+*/
+public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
+	switch(errorid) {
+		case CR_SERVER_GONE_ERROR: {
+			printf("[FEHLER] Datenbankverbindung (ID: %d) unterbrochen: %s | Abfrage: %s | Callback: %s", _:handle, error, query, callback);
+		}
+		case ER_SYNTAX_ERROR: {
+			printf("[FEHLER] Syntax Fehler in Datenbankabfrage (ID: %d): %s | Callback: %s | Error: %s", _:handle, query, callback, error);
+		}
+	}
+	return true;
 }

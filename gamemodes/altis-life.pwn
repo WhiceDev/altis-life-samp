@@ -1,5 +1,6 @@
 #include <a_samp>
 #include <a_mysql>
+#include <bcrypt>
 
 /* MySQL Daten */
 
@@ -50,6 +51,9 @@ public OnGameModeInit() {
 	// Datenbankverbindung
 	mysqlConnect();
 	
+	// Erstelle Datenbank-Tabellen falls sie noch nicht existieren
+	CreateDatabaseTables();
+	
 	return true;
 }
 
@@ -86,7 +90,7 @@ public OnPlayerConnect(playerid) {
 	GetPlayerName(playerid, pName, sizeof(pName));
 	
 	// Überprüfe ob der Spieler in der Datenbank existiert
-	mysql_format(dbhandle, query, sizeof(query), "SELECT `Name` FROM `users` WHERE `name` = '%e' LIMIT 1", pName);
+	mysql_format(dbhandle, query, sizeof(query), "SELECT `id` FROM `users` WHERE `name` = '%e' LIMIT 1", pName);
 	mysql_tquery(dbhandle, query, "AccountCheck", "d", playerid);
 	return true;
 }
@@ -106,11 +110,10 @@ function AccountCheck(playerid) {
 	// Überprüfe ob Reihen im Cache sind
 	if(cache_num_rows()) {
 	    // Account mit dem Namen existiert bereits
-	//	SPD(playerid, D_LOGIN, DIALOG_STYLE_INPUT, D_WHITE""
+		SPD(playerid, D_LOGIN, DIALOG_STYLE_INPUT, D_WHITE"Einloggen", D_WHITE"Moin, logge dich bitte ein um spielen zu können:", D_WHITE"Einloggen", D_WHITE"Abbrechen");
 	} else {
 	    // Kein Account mit dem Namen registriert
 	}
-
 }
 
 
@@ -164,5 +167,39 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 			printf("[FEHLER] Syntax Fehler in Datenbankabfrage (ID: %d): %s | Callback: %s | Error: %s", _:handle, query, callback, error);
 		}
 	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion ruft die einzelnen Funktionen zur Datenbanktabllenerstellung auf
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateDatabaseTables() {
+	CreateUserTable();
+	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'users' Tablle in der Datebank, falls sie noch nicht existiert
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateUserTable() {
+    new query[420];
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (\
+		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
+		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
+		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
+		PRIMARY KEY (`id`) USING BTREE\
+	)\
+	COMMENT='all user informations'\
+	COLLATE='utf8mb4_general_ci'\
+	ENGINE=InnoDB;");
+	mysql_tquery(dbhandle, query);
+	
 	return true;
 }

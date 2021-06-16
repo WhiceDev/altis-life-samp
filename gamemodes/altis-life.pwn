@@ -111,9 +111,7 @@ public OnPlayerConnect(playerid) {
 	new query[256], playerName[MAX_PLAYER_NAME + 1];
 	
 	// Auslesen des Spielernamens
-	GetPlayerName(playerid, playerName, sizeof(playerName));
-	
-	format(pInfo[playerid][pName], sizeof(playerName), playerName);
+	GetPlayerName(playerid, pInfo[playerid][pName], MAX_PLAYER_NAME);
 	
 	// Überprüfe ob der Spieler in der Datenbank existiert
 	mysql_format(dbhandle, query, sizeof(query), "SELECT `id` FROM `users` WHERE `name` = '%e' LIMIT 1", playerName);
@@ -141,6 +139,8 @@ function AccountCheck(playerid) {
 	    // Kein Account mit dem Namen registriert
 	    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
 	}
+	TogglePlayerSpectating(playerid, true);
+	return true;
 }
 
 /*
@@ -177,12 +177,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				// Passwort ist nach Vorgaben
 				
 				// Generiere zufälligen Salt
-				new salt[11];
+				new salt[11], password[250];
 				for(new i; i < 10; i++) {
 	                salt[i] = random(79) + 47;
 	            }
 	            salt[10] = 0;
-				bcrypt_hash(inputtext, BCRYPT_COST, "OnPasswordHashed", "d", playerid);
+				format(pInfo[playerid][pSalt], sizeof(salt), salt);
+				format(password, sizeof(password), "%s%s", inputtext, salt);
+				bcrypt_hash(password, BCRYPT_COST, "OnPasswordHashed", "d", playerid);
 				return true;
 			}
 	    }
@@ -190,6 +192,65 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return false;
 }
 
+/*
+ *
+ *  Berechnet einen bcrypt-Hash für eine gegebene Zeichenkette
+ *	unter Verwendung des angegebenen Arbeitsfaktors.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *  @return 0 - Fehler, 1 - Erfolg
+ *
+ */
+function OnPasswordHashed(playerid) {
+    new hash[BCRYPT_HASH_LENGTH], query[256];
+    bcrypt_get_hash(hash);
+    mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `users` (`password`, `salt`, `name`) VALUES ('%e', '%e', '%e')",
+		hash, pInfo[playerid][pSalt], pInfo[playerid][pName]);
+    mysql_tquery(dbhandle, query, "OnUserCreate", "d", playerid);
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Spieler in der Datenbank erstellt wird
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+function OnUserCreate(playerid) {
+	pInfo[playerid][pDBID] = cache_insert_id();
+	SCM(playerid, COLOR_WHITE, "=> Erfolgreich registriert");
+	TogglePlayerSpectating(playerid, false);
+	return true;
+}
+
+/*
+ *
+ *  Wird aufgerufen, wenn ein Spieler versucht, über die Klassenauswahl zu spawnen,
+ *	entweder durch Drücken der UMSCHALTTASTE oder durch Klicken auf die Schaltfläche "Spawn".
+ *
+ *  @param  playerid    Die ID des Spielers
+ *  @param  classid     Die ID der derzeit angeschauten Klasse
+ *  @return 0 - Hält den Spieler vom spawnen ab, 1 - ändert nichts
+ *
+ */
+public OnPlayerRequestClass(playerid, classid) {
+	return false;
+}
+
+/*
+ *
+ *  Wird aufgerufen, wenn ein Spieler versucht, über die Klassenauswahl zu spawnen,
+ *	entweder durch Drücken der UMSCHALTTASTE oder durch Klicken auf die Schaltfläche "Spawn".
+ *
+ *  @param  playerid    Die ID des Spielers
+ *  @return 0 - Hält den Spieler vom spawnen ab, 1 - ändert nichts
+ *
+ */
+public OnPlayerRequestSpawn(playerid) {
+	return false;
+}
 
 /*
  *
@@ -263,17 +324,17 @@ stock CreateDatabaseTables() {
  *
  */
 stock CreateUserTable() {
-    new query[500];
-	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (\
+    new query[500], query2[500];
+    format(query2, sizeof(query2), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
 		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
-		PRIMARY KEY (`id`) USING BTREE\
-	)\
+		PRIMARY KEY (`id`) USING BTREE");
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE `users` (%s)\
 	COMMENT='all user informations'\
 	COLLATE='utf8mb4_general_ci'\
-	ENGINE=InnoDB;");
+	ENGINE=InnoDB;", query2);
 	mysql_tquery(dbhandle, query);
 	
 	return true;

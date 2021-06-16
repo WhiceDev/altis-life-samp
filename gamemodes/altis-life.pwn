@@ -1,6 +1,7 @@
 #include <a_samp>
 #include <a_mysql>
 #include <bcrypt>
+#include <zcmd>
 
 /* MySQL Daten */
 
@@ -25,6 +26,10 @@ new startTime;
 #define SPD ShowPlayerDialog
 #define SCM SendClientMessage
 #define KickPlayer(%0) SetTimerEx("KickThePlayer", 250, 0, "i", %0)
+#define FreezePlayer(%0) TogglePlayerControllable(%0,0)
+#define UnFreezePlayer(%0) TogglePlayerControllable(%0,1)
+#define Spectate(%0) TogglePlayerSpectating(%0, 1)
+#define UnSpectate(%0) TogglePlayerSpectating(%0, 0)
 
 // BCrypt Kosten
 #define BCRYPT_COST 14
@@ -38,7 +43,8 @@ enum {
 enum E_PLAYER {
 	pDBID,
 	pName[MAX_PLAYER_NAME + 1],
-	pSalt[11]
+	pSalt[11],
+	bool:pLogged
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -56,6 +62,9 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 #define D_WHITE "{FFFFFF}"
 #define D_GREEN "{00FF00}"
 #define D_RED "{FF0000}"
+
+// Spieler Spawn Position
+#define SPAWN_PLAYER_POS 1479.5073, -1673.8608, 14.0469, 179.8810
 
 
 
@@ -91,7 +100,6 @@ public OnGameModeInit() {
 public OnGameModeExit() {
 	// Schließen der Datenbankverbindung
 	mysql_close(dbhandle);
-	
 	return true;
 }
 
@@ -107,15 +115,60 @@ public OnPlayerConnect(playerid) {
 	// Abfrage ob Spieler ein NPC ist, falls ja überspringe das Callback
 	if(IsPlayerNPC(playerid)) return true;
 	
-	// Erstellen benötiger lokaler Variablen
-	new query[256], playerName[MAX_PLAYER_NAME + 1];
+	// Reset Variables
+	pInfo[playerid][pLogged] = false;
 	
 	// Auslesen des Spielernamens
 	GetPlayerName(playerid, pInfo[playerid][pName], MAX_PLAYER_NAME);
 	
-	// Überprüfe ob der Spieler in der Datenbank existiert
-	mysql_format(dbhandle, query, sizeof(query), "SELECT `id` FROM `users` WHERE `name` = '%e' LIMIT 1", playerName);
-	mysql_tquery(dbhandle, query, "AccountCheck", "d", playerid);
+	// Setze vorab Spawn Position
+	SetSpawnInfo(playerid, NO_TEAM, 29, SPAWN_PLAYER_POS, 0, 0, 0, 0, 0, 0);
+	
+	Spectate(playerid);
+	
+	// Setze den Spieler an eine gute Position für den Login/Register Hintergrund
+	PrepareSpawnPlayer(playerid);
+	return true;
+}
+
+/*
+ *
+ *  Spawnt den Spieler und Freezt ihn, bevor er zum Login/Register kommt
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *
+ */
+stock PrepareSpawnPlayer(playerid) {
+	SpawnPlayer(playerid);
+	FreezePlayer(playerid);
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Spieler spawnt.
+ *
+ *  @params playerid    Die ID des Spielers
+ *  @return 0 - Der Spieler muss beim nächsten Spawn eine neue Klasse wählen
+ *
+ */
+public OnPlayerSpawn(playerid) {
+	// Abfrage ob Spieler eingeloggt ist
+	if(!pInfo[playerid][pLogged]) {
+	
+	    // Zeige Login/Register Hintergrund
+	    SetPlayerCameraPos(10, 10 , 10, 10);
+	    SetPlayerCameraLookAt(0, 0, 0, 6);
+	    
+		// Überprüfe ob der Spieler in der Datenbank existiert
+		new query[256];
+		mysql_format(dbhandle, query, sizeof(query), "SELECT `salt` FROM `users` WHERE `name` = '%e' LIMIT 1", pInfo[playerid][pName]);
+		mysql_tquery(dbhandle, query, "AccountCheck", "d", playerid);
+	
+	} else {
+	    //
+	}
 	return true;
 }
 
@@ -139,7 +192,6 @@ function AccountCheck(playerid) {
 	    // Kein Account mit dem Namen registriert
 	    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
 	}
-	TogglePlayerSpectating(playerid, true);
 	return true;
 }
 
@@ -222,6 +274,7 @@ function OnUserCreate(playerid) {
 	pInfo[playerid][pDBID] = cache_insert_id();
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich registriert");
 	TogglePlayerSpectating(playerid, false);
+	pInfo[playerid][pLogged] = true;
 	return true;
 }
 

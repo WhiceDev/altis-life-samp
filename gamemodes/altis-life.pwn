@@ -57,6 +57,7 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 #define COLOR_PINK 0xFF00FFFF
 #define COLOR_YELLOW 0xFFFF00FF
 #define COLOR_GREEN 0x00FF00FF
+#define COLOR_GREY 0x969696FF
 
 // Inline Farben definieren
 #define D_WHITE "{FFFFFF}"
@@ -128,7 +129,27 @@ public OnPlayerConnect(playerid) {
 	
 	// Setze den Spieler an eine gute Position für den Login/Register Hintergrund
 	PrepareSpawnPlayer(playerid);
+	
+	// Zeige Verbindungs-Nachricht an
+	new string[144];
+	format(string, sizeof(string), "Spieler %s verbindet", GetName(playerid));
+	SendClientMessageToAll(COLOR_GREY, string);
 	return true;
+}
+
+
+/*
+ *
+ *  Diese Funktion gibt den Spielernamen des angegeben Spielers zurück
+ *
+ *  @params playerid    Die ID des Spielers
+ *  @return name        Spielername der zugehörigen playerid
+ *
+ */
+stock GetName(playerid) {
+	new name[MAX_PLAYER_NAME + 1];
+	format(name, sizeof(name), pInfo[playerid][pName]);
+	return name;
 }
 
 /*

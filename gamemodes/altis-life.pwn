@@ -44,7 +44,8 @@ enum E_PLAYER {
 	pDBID,
 	pName[MAX_PLAYER_NAME + 1],
 	pSalt[11],
-	bool:pLogged
+	bool:pLogged,
+	pPassword[61]
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -184,7 +185,7 @@ public OnPlayerSpawn(playerid) {
 	    
 		// Überprüfe ob der Spieler in der Datenbank existiert
 		new query[256];
-		mysql_format(dbhandle, query, sizeof(query), "SELECT `salt` FROM `users` WHERE `name` = '%e' LIMIT 1", pInfo[playerid][pName]);
+		mysql_format(dbhandle, query, sizeof(query), "SELECT `salt`, `password` FROM `users` WHERE `name` = '%e' LIMIT 1", pInfo[playerid][pName]);
 		mysql_tquery(dbhandle, query, "AccountCheck", "d", playerid);
 	
 	} else {
@@ -208,6 +209,8 @@ function AccountCheck(playerid) {
 	// Überprüfe ob Reihen im Cache sind
 	if(cache_num_rows()) {
 	    // Account mit dem Namen existiert bereits
+	    cache_get_value_name(0, "password", pInfo[playerid][pPassword], 61);
+		cache_get_value_name(0, "salt", pInfo[playerid][pSalt], 11);
 		ShowLoginDialog(playerid);
 	} else {
 	    // Kein Account mit dem Namen registriert
@@ -276,6 +279,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				    return true;
 				}
 				// Passwort ist nach Vorgaben
+				new password[250];
+				format(password, sizeof(password), "%s%s", inputtext, pInfo[playerid][pSalt]);
+				bcrypt_check(password, inputtext, "OnPasswordChecked", "d", playerid);
 			}
 	    }
 	    case D_REGISTER: {
@@ -312,6 +318,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 /*
  *
+ *  Prüft ob das Passwort mit dem eingegebenen übereinstimmt
+ *
+ *  @param  playerid    Die ID des Spielers
+ *  @return 0 - Fehler, 1 - Erfolg
+ *
+ */
+function OnPasswordChecked(playerid) {
+	// Prüfen ob das Passwort übereinstimmt
+	if(bcrypt_is_equal()) {
+	    new query[256];
+	    mysql_format(dbhandle, query, sizeof(query), "SELECT * FROM `users` WHERE `name` = '%e' AND `password` = '%e' AND `salt` = '%e' LIMIT 1",
+			GetName(playerid), pInfo[playerid][pPassword], pInfo[playerid][pSalt]);
+		mysql_tquery(dbhandle, query, "OnUserLogin", "d", playerid);
+	} else {
+		SCM(playerid, COLOR_RED, "[FEHLER]: Das Passwort ist nicht korrekt, versuche es erneut!");
+		ShowLoginDialog(playerid);
+	}
+	return 1;
+}
+
+/*
+ *
  *  Berechnet einen bcrypt-Hash für eine gegebene Zeichenkette
  *	unter Verwendung des angegebenen Arbeitsfaktors.
  *
@@ -339,10 +367,48 @@ function OnPasswordHashed(playerid) {
 function OnUserCreate(playerid) {
 	pInfo[playerid][pDBID] = cache_insert_id();
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich registriert");
-	TogglePlayerSpectating(playerid, false);
 	pInfo[playerid][pLogged] = true;
+	TogglePlayerSpectating(playerid, false);
 	
 	// Zeige Verbindungs-Nachricht an
+	new string[144];
+	format(string, sizeof(string), "Spieler %s verbunden", GetName(playerid));
+	SendClientMessageToAll(COLOR_GREY, string);
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn sich ein Spieler einloggt
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+function OnUserLogin(playerid) {
+	
+	cache_get_value_name_int(0, "id", pInfo[playerid][pDBID]);
+	
+	
+	SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
+	pInfo[playerid][pLogged] = true;
+	TogglePlayerSpectating(playerid, false);
+
+	ShowConnectMessage(playerid);
+	return true;
+}
+
+/*
+ *
+ *  Diese Funktion sendet allen Spielern eine Verbindungs-Nachricht
+ *	zum angegebenen Spieler
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+stock ShowConnectMessage(playerid) {
+    // Zeige Verbindungs-Nachricht an
 	new string[144];
 	format(string, sizeof(string), "Spieler %s verbunden", GetName(playerid));
 	SendClientMessageToAll(COLOR_GREY, string);

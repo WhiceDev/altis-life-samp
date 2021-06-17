@@ -296,6 +296,11 @@ function OnUserCreate(playerid) {
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich registriert");
 	TogglePlayerSpectating(playerid, false);
 	pInfo[playerid][pLogged] = true;
+	
+	// Zeige Verbindungs-Nachricht an
+	new string[144];
+	format(string, sizeof(string), "Spieler %s verbunden", GetName(playerid));
+	SendClientMessageToAll(COLOR_GREY, string);
 	return true;
 }
 

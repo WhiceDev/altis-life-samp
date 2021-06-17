@@ -2,6 +2,7 @@
 #include <a_mysql>
 #include <bcrypt>
 #include <zcmd>
+#include <sscanf2>
 
 /* MySQL Daten */
 
@@ -45,7 +46,8 @@ enum E_PLAYER {
 	pName[MAX_PLAYER_NAME + 1],
 	pSalt[11],
 	bool:pLogged,
-	pPassword[61]
+	pPassword[61],
+	bool:pSideChat
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -59,11 +61,13 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 #define COLOR_YELLOW 0xFFFF00FF
 #define COLOR_GREEN 0x00FF00FF
 #define COLOR_GREY 0x969696FF
+#define COLOR_SIDECHAT 0x00ABFFFF
 
 // Inline Farben definieren
 #define D_WHITE "{FFFFFF}"
 #define D_GREEN "{00FF00}"
 #define D_RED "{FF0000}"
+#define D_SIDECHAT "{00ABFF}"
 
 // Spieler Spawn Position
 #define SPAWN_PLAYER_POS 1479.5073, -1673.8608, 14.0469, 179.8810
@@ -467,6 +471,31 @@ stock mysqlConnect() {
 	    new error[100];
 		mysql_error(error, sizeof(error), dbhandle);
 		printf("[FEHLER] Datenbankverbindung fehlgeschlagen #%d '%s'", errno, error);
+	}
+	return true;
+}
+
+
+CMD:side(playerid, params[]) {
+	new message[140], string[144];
+	if(sscanf(params, "s[100]", message)) {
+	    // Keine Parameter angegeben, also Side-Chat aktivieren / deaktivieren
+	    
+	    // Schalte den Side-Chat des Spielers um
+		new const bool:sideChat = pInfo[playerid][pSideChat];
+	    pInfo[playerid][pSideChat] = !sideChat;
+	    
+	    // Sende Spieler Nachricht zur Information
+	    new status[24];
+	    if(pInfo[playerid][pSideChat]) status = D_RED"deaktiviert";
+	    else status = D_GREEN"aktiviert";
+		format(string, sizeof(string), "=> "D_SIDECHAT"Side-Chat %s", status);
+		SCM(playerid, COLOR_WHITE, string);
+	} else {
+	    // Parameter angegeben, somit jene schreiben ohne Side-Chat umzustellen
+	    if(strlen(message) >= 100) return SCM(playerid, COLOR_RED, "[FEHLER] "D_WHITE"Maximal 100 Zeichen erlaubt");
+	    format(string, sizeof(string), "%s:"D_WHITE" \"%s\"", GetName(playerid), message);
+		SendClientMessageToAll(COLOR_SIDECHAT, string);
 	}
 	return true;
 }

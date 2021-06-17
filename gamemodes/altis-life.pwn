@@ -82,7 +82,7 @@ main() {}
 public OnGameModeInit() {
 	// Starte das Benchmarking
 	startTime = GetTickCount();
-
+    
 	// Datenbankverbindung
 	mysqlConnect();
 	
@@ -281,7 +281,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				// Passwort ist nach Vorgaben
 				new password[250];
 				format(password, sizeof(password), "%s%s", inputtext, pInfo[playerid][pSalt]);
-				bcrypt_check(password, inputtext, "OnPasswordChecked", "d", playerid);
+				bcrypt_check(password, pInfo[playerid][pPassword], "OnPasswordChecked", "d", playerid);
 			}
 	    }
 	    case D_REGISTER: {
@@ -484,6 +484,7 @@ stock mysqlConnect() {
  *
  */
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
+	print("mysql_fehler");
 	switch(errorid) {
 		case CR_SERVER_GONE_ERROR: {
 			printf("[FEHLER] Datenbankverbindung (ID: %d) unterbrochen: %s | Abfrage: %s | Callback: %s", _:handle, error, query, callback);
@@ -521,7 +522,7 @@ stock CreateUserTable() {
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
 		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
 		PRIMARY KEY (`id`) USING BTREE");
-	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE `users` (%s)\
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (%s)\
 	COMMENT='all user informations'\
 	COLLATE='utf8mb4_general_ci'\
 	ENGINE=InnoDB;", query2);

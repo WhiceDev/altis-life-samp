@@ -155,7 +155,7 @@ stock GetName(playerid) {
 /*
  *
  *  Spawnt den Spieler und Freezt ihn, bevor er zum Login/Register kommt
- *	Dieses Callback benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *  @params playerid    Die ID des Spielers
  *
@@ -208,11 +208,41 @@ function AccountCheck(playerid) {
 	// Überprüfe ob Reihen im Cache sind
 	if(cache_num_rows()) {
 	    // Account mit dem Namen existiert bereits
-		SPD(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, D_WHITE"Einloggen", D_WHITE"Moin, logge dich bitte ein um spielen zu können:", D_WHITE"Einloggen", D_WHITE"Abbrechen");
+		ShowLoginDialog(playerid);
 	} else {
 	    // Kein Account mit dem Namen registriert
-	    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
+	    ShowRegisterDialog(playerid);
 	}
+	return true;
+}
+
+/*
+ *
+ *  Zeigt den Einloggen-Dialog für den angegeben Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *
+ */
+stock ShowLoginDialog(playerid) {
+	new string[256];
+	format(string, sizeof(string), D_WHITE"Moin %s, logge dich bitte ein um spielen zu können:", GetName(playerid));
+    SPD(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, D_WHITE"Einloggen", string, D_WHITE"Einloggen", D_WHITE"Abbrechen");
+	return true;
+}
+
+/*
+ *
+ *  Zeigt den Registrieren-Dialog für den angegeben Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *
+ */
+stock ShowRegisterDialog(playerid) {
+	new string[256];
+	format(string, sizeof(string), D_WHITE"Moin %s, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", GetName(playerid));
+    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", string, D_WHITE"Registrieren", D_WHITE"Abbrechen");
 	return true;
 }
 
@@ -232,6 +262,21 @@ function AccountCheck(playerid) {
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	switch(dialogid) {
 	    case D_LOGIN: {
+	        if(!response) {
+				// Auf 'Abbrechen' gedrückt
+				SCM(playerid, COLOR_WHITE, "=> Ohne Account kannst du bei uns leider nicht spielen..");
+				KickPlayer(playerid);
+				return true;
+			} else {
+			    // Auf 'Einloggen' gedrückt
+			    if(strlen(inputtext) < 6 || strlen(inputtext) > 200) {
+				    // Passwort ist zu kurz oder zu lang (6-200)
+				    SCM(playerid, COLOR_RED, "[FEHLER]: Passwort muss zwischen 6 und 200 Zeichen besitzen!");
+				    ShowLoginDialog(playerid);
+				    return true;
+				}
+				// Passwort ist nach Vorgaben
+			}
 	    }
 	    case D_REGISTER: {
 	        if(!response) {
@@ -244,7 +289,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(strlen(inputtext) < 6 || strlen(inputtext) > 200) {
 				    // Passwort ist zu kurz oder zu lang (6-200)
 				    SCM(playerid, COLOR_RED, "[FEHLER]: Passwort muss zwischen 6 und 200 Zeichen besitzen!");
-				    SPD(playerid, D_REGISTER, DIALOG_STYLE_INPUT, D_WHITE"Registrieren", D_WHITE"Moin, bitte gebe ein sicheres Passwort ein um spielen zu können: (6-200 Zeichen)", D_WHITE"Registrieren", D_WHITE"Abbrechen");
+				    ShowRegisterDialog(playerid);
 				    return true;
 				}
 				// Passwort ist nach Vorgaben

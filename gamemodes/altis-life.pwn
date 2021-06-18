@@ -595,13 +595,16 @@ CMD:inventory(playerid, params[]) {
  *
  */
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
-	print("mysql_fehler");
+	//1064 pr�fen
 	switch(errorid) {
 		case CR_SERVER_GONE_ERROR: {
 			printf("[FEHLER] Datenbankverbindung (ID: %d) unterbrochen: %s | Abfrage: %s | Callback: %s", _:handle, error, query, callback);
 		}
 		case ER_SYNTAX_ERROR: {
 			printf("[FEHLER] Syntax Fehler in Datenbankabfrage (ID: %d): %s | Callback: %s | Error: %s", _:handle, query, callback, error);
+		}
+		default: {
+            printf("[FEHLER] Datenbank-Anfrage (ID: %d) fehlgeschlagen: #%d %s | Callback: %s | Error: %s", _:handle, errorid, query, callback, error);
 		}
 	}
 	return true;

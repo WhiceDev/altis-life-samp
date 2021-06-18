@@ -51,7 +51,8 @@ enum E_PLAYER {
 	pSalt[11],
 	bool:pLogged,
 	pPassword[61],
-	bool:pSideChat
+	bool:pSideChat,
+	bool:pInventoryOpend
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -66,6 +67,7 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 #define COLOR_GREEN 0x00FF00FF
 #define COLOR_GREY 0x969696FF
 #define COLOR_SIDECHAT 0x00ABFFFF
+#define COLOR_ORANGE 0xFFAA00FF
 
 // Inline Farben definieren
 #define D_WHITE "{FFFFFF}"
@@ -545,6 +547,29 @@ CMD:side(playerid, params[]) {
 
 /*
  *
+ *	Dieser Befehl öffnet/schließt das Inventar
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+CMD:inventory(playerid, params[]) {
+	#pragma unused params
+	new const bool:inventoryOpend = pInfo[playerid][pInventoryOpend];
+	pInfo[playerid][pInventoryOpend] = !inventoryOpend;
+	if(inventoryOpend) {
+	    // Inventar schließen
+	    HideInventoryTextDraws(playerid);
+	} else {
+	    // Inventar öffnen
+	    ShowInventoryTextDraws(playerid);
+	}
+	return true;
+}
+
+/*
+ *
  *	Dieses Callback wird aufgerufen, wenn ein Fehler bei der Verarbeitung einer MySQL-Abfrage auftritt.
  *	Dieses Callback benutzt den Return-Wert nicht.
  *
@@ -600,6 +625,82 @@ stock CreateUserTable() {
 	ENGINE=InnoDB;", query2);
 	mysql_tquery(dbhandle, query);
 	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion zeigt die Inventar Text-Draws für den Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock ShowInventoryTextDraws(playerid) {
+    PlayerTextDrawShow(playerid, inventoryBackgroundBox[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTitleBox[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonClose[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonSettings[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonGangmenu[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonKeys[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonSMS[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonUpdate[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonAdmin[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonGroups[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextMenu[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextWeight[playerid]);
+	PlayerTextDrawShow(playerid, inventoryBoxMoney[playerid]);
+	PlayerTextDrawShow(playerid, inventoryBoxLicenses[playerid]);
+	PlayerTextDrawShow(playerid, inventoryBoxItems[playerid]);
+	PlayerTextDrawShow(playerid, inventoryImageCash[playerid]);
+	PlayerTextDrawShow(playerid, inventoryImageBank[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextBankMoney[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextCashMoney[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonGiveMoney[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextGiveMoney[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTestListLicenses[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextListItems[playerid]);
+	PlayerTextDrawShow(playerid, inventoryTextItemAmount[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonItemUse[playerid]);
+	PlayerTextDrawShow(playerid, inventoryButtonItemGive[playerid]);
+	SelectTextDraw(playerid, COLOR_ORANGE);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion versteckt die Inventar Text-Draws vor dem Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock HideInventoryTextDraws(playerid) {
+    PlayerTextDrawHide(playerid, inventoryBackgroundBox[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTitleBox[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonClose[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonSettings[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonGangmenu[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonKeys[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonSMS[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonUpdate[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonAdmin[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonGroups[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextMenu[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextWeight[playerid]);
+	PlayerTextDrawHide(playerid, inventoryBoxMoney[playerid]);
+	PlayerTextDrawHide(playerid, inventoryBoxLicenses[playerid]);
+	PlayerTextDrawHide(playerid, inventoryBoxItems[playerid]);
+	PlayerTextDrawHide(playerid, inventoryImageCash[playerid]);
+	PlayerTextDrawHide(playerid, inventoryImageBank[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextBankMoney[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextCashMoney[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonGiveMoney[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextGiveMoney[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTestListLicenses[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextListItems[playerid]);
+	PlayerTextDrawHide(playerid, inventoryTextItemAmount[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonItemUse[playerid]);
+	PlayerTextDrawHide(playerid, inventoryButtonItemGive[playerid]);
+	CancelSelectTextDraw(playerid);
 	return true;
 }
 

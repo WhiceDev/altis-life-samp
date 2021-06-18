@@ -59,6 +59,16 @@ enum E_PLAYER {
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
+enum E_FIELDS {
+	fieldId,
+	fieldName[32],
+	Float:fieldMinX,
+	Float:fieldMinY,
+	Float:fieldMaxX,
+	Float:fieldMaxY,
+	fieldColor
+};
+
 // Farben definieren
 #define COLOR_FAIL 0xFF0000FF
 #define COLOR_WHITE 0xFFFFFFFF
@@ -71,6 +81,7 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 #define COLOR_GREY 0x969696FF
 #define COLOR_SIDECHAT 0x00ABFFFF
 #define COLOR_ORANGE 0xFFAA00FF
+#define COLOR_BROWN 0x9B5200FF
 
 // Inline Farben definieren
 #define D_WHITE "{FFFFFF}"
@@ -124,6 +135,15 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 */
 
 
+// Felder
+new const fields[][E_FIELDS] = {
+//  {id, name, minx, miny, max, maxy}
+	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, COLOR_ORANGE},
+	{1, "Banenen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, COLOR_YELLOW},
+	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, COLOR_BROWN}
+};
+
+
 
 main() {}
 
@@ -144,6 +164,23 @@ public OnGameModeInit() {
 	// Erstelle Datenbank-Tabellen falls sie noch nicht existieren
 	CreateDatabaseTables();
 	
+	// Erstelle Abbau Felder
+	//CreateMiningFields();
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die Abbau Felder
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateMiningFields() {
+	for(new i = 0; i < sizeof(fields); i++) {
+	    new field = GangZoneCreate(fields[i][fieldMinX], fields[i][fieldMinY], fields[i][fieldMaxX], fields[i][fieldMaxY]);
+	    GangZoneShowForAll(field, fields[i][fieldColor]);
+	    printf("Feld %d erstellt", i);
+	}
 	return true;
 }
 
@@ -582,6 +619,21 @@ CMD:inventory(playerid, params[]) {
 	    // Inventar öffnen
 	    ShowInventoryTextDraws(playerid);
 	}
+	return true;
+}
+
+/*
+ *
+ *	Dieser Befehl erstellt ein Abbau-Feld
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+CMD:feld(playerid, params[]) {
+	#pragma unused params
+	CreateMiningFields();
 	return true;
 }
 

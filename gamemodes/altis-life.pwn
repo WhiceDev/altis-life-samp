@@ -35,6 +35,7 @@ new startTime;
 #define UnFreezePlayer(%0) TogglePlayerControllable(%0,1)
 #define Spectate(%0) TogglePlayerSpectating(%0, 1)
 #define UnSpectate(%0) TogglePlayerSpectating(%0, 0)
+#define PRESSED(%0) (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
 // BCrypt Kosten
 #define BCRYPT_COST 14
@@ -574,14 +575,32 @@ CMD:side(playerid, params[]) {
  */
 CMD:inventory(playerid, params[]) {
 	#pragma unused params
-	new const bool:inventoryOpend = pInfo[playerid][pInventoryOpend];
-	pInfo[playerid][pInventoryOpend] = !inventoryOpend;
-	if(inventoryOpend) {
+	if(pInfo[playerid][pInventoryOpend]) {
 	    // Inventar schließen
 	    HideInventoryTextDraws(playerid);
 	} else {
 	    // Inventar öffnen
 	    ShowInventoryTextDraws(playerid);
+	}
+	return true;
+}
+
+/*
+ *
+ *	Dieser Callback wird aufgerufen, wenn der Zustand einer beliebigen unterstützten
+ *	Taste geändert wird (gedrückt/freigegeben).
+ *	Richtungstasten lösen OnPlayerKeyStateChange (oben/unten/links/rechts) nicht aus.
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  newkeys		Eine Map (Bitmaske) der aktuell gehaltenen Tasten
+ *  @param  oldkeys     Eine Map (Bitmaske) der Tasten, die vor der aktuellen Änderung gehalten wurden
+ *
+ */
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+	// Falls Taste 'Z' gedrückt wird => Öffne/Schließe Inventar
+	if(PRESSED(KEY_YES)) {
+	    cmd_inventory(playerid, "");
 	}
 	return true;
 }
@@ -665,11 +684,12 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     // Text-Draw 'Schließen' wurde angeklickt
     if(playertextid == inventoryButtonClose[playerid]) {
         HideInventoryTextDraws(playerid);
-        pInfo[playerid][pInventoryOpend] = false;
     }
     // Text-Draw 'Update' wurde angeklickt
 	else if(playertextid == inventoryButtonUpdate[playerid]) {
 	    SavePlayer(playerid);
+	    SCM(playerid, COLOR_WHITE, "=> Deine Daten wurden gespeichert");
+	    HideInventoryTextDraws(playerid);
 	}
 	return true;
 }
@@ -683,7 +703,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
  */
 stock SavePlayer(playerid) {
 	new query[256];
-	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', 'cash' = '%d' WHERE `name` == '%e' AND `id` = '%d'",
+	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', `cash` = '%d' WHERE `name` == '%e' AND `id` = '%d'",
 		pInfo[playerid][pBank], pInfo[playerid][pCash], GetName(playerid), pInfo[playerid][pDBID]);
 	mysql_tquery(dbhandle, query);
 	return true;
@@ -764,6 +784,7 @@ stock ShowInventoryTextDraws(playerid) {
 	SelectTextDraw(playerid, COLOR_ORANGE);
 	
 	SetInventoryTextDrawValues(playerid);
+	pInfo[playerid][pInventoryOpend] = true;
 	return true;
 }
 
@@ -802,6 +823,7 @@ stock HideInventoryTextDraws(playerid) {
 	PlayerTextDrawHide(playerid, inventoryButtonItemUse[playerid]);
 	PlayerTextDrawHide(playerid, inventoryButtonItemGive[playerid]);
 	CancelSelectTextDraw(playerid);
+	pInfo[playerid][pInventoryOpend] = false;
 	return true;
 }
 

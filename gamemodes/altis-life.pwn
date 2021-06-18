@@ -17,6 +17,10 @@ new MySQL:dbhandle;
 #undef MAX_PLAYER_NAME
 #define MAX_PLAYER_NAME (20)
 
+// Legt die maximale Spieleranzahl fest
+#undef MAX_PLAYERS
+#define MAX_PLAYERS (50)
+
 
 // Variable für Benchmark Tests (Zeitberechnung)
 new startTime;
@@ -71,6 +75,34 @@ new pInfo[MAX_PLAYERS][E_PLAYER];
 
 // Spieler Spawn Position
 #define SPAWN_PLAYER_POS 1479.5073, -1673.8608, 14.0469, 179.8810
+
+// Inventar Text-Draw Definitionen
+new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
+	PlayerText:inventoryTitleBox[MAX_PLAYERS],
+	PlayerText:inventoryButtonClose[MAX_PLAYERS],
+	PlayerText:inventoryButtonSettings[MAX_PLAYERS],
+	PlayerText:inventoryButtonGangmenu[MAX_PLAYERS],
+	PlayerText:inventoryButtonKeys[MAX_PLAYERS],
+	PlayerText:inventoryButtonSMS[MAX_PLAYERS],
+	PlayerText:inventoryButtonUpdate[MAX_PLAYERS],
+	PlayerText:inventoryButtonAdmin[MAX_PLAYERS],
+	PlayerText:inventoryButtonGroups[MAX_PLAYERS],
+	PlayerText:inventoryTextMenu[MAX_PLAYERS],
+	PlayerText:inventoryTextWeight[MAX_PLAYERS],
+	PlayerText:inventoryBoxMoney[MAX_PLAYERS],
+	PlayerText:inventoryBoxLicenses[MAX_PLAYERS],
+	PlayerText:inventoryBoxItems[MAX_PLAYERS],
+	PlayerText:inventoryImageCash[MAX_PLAYERS],
+	PlayerText:inventoryImageBank[MAX_PLAYERS],
+	PlayerText:inventoryTextBankMoney[MAX_PLAYERS],
+	PlayerText:inventoryTextCashMoney[MAX_PLAYERS],
+	PlayerText:inventoryButtonGiveMoney[MAX_PLAYERS],
+	PlayerText:inventoryTextGiveMoney[MAX_PLAYERS],
+	PlayerText:inventoryTestListLicenses[MAX_PLAYERS],
+	PlayerText:inventoryTextListItems[MAX_PLAYERS],
+	PlayerText:inventoryTextItemAmount[MAX_PLAYERS],
+	PlayerText:inventoryButtonItemUse[MAX_PLAYERS],
+	PlayerText:inventoryButtonItemGive[MAX_PLAYERS];
 
 
 
@@ -139,6 +171,9 @@ public OnPlayerConnect(playerid) {
 	new string[144];
 	format(string, sizeof(string), "Spieler %s verbindet", GetName(playerid));
 	SendClientMessageToAll(COLOR_GREY, string);
+	
+	// Inventar Text-Draw's laden
+	LoadInventoryTextDraws(playerid);
 	return true;
 }
 
@@ -209,7 +244,6 @@ public OnPlayerSpawn(playerid) {
  *
  */
 function AccountCheck(playerid) {
-	new query[256];
 	// Überprüfe ob Reihen im Cache sind
 	if(cache_num_rows()) {
 	    // Account mit dem Namen existiert bereits
@@ -557,5 +591,379 @@ stock CreateUserTable() {
 	ENGINE=InnoDB;", query2);
 	mysql_tquery(dbhandle, query);
 	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion lädt die Inventar Text-Draws für den angegeben Spieler
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock LoadInventoryTextDraws(playerid) {
+    inventoryBackgroundBox[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 127.000000, "_");
+	PlayerTextDrawFont(playerid, inventoryBackgroundBox[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, inventoryBackgroundBox[playerid], 0.600000, 16.650005);
+	PlayerTextDrawTextSize(playerid, inventoryBackgroundBox[playerid], 306.000000, 306.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryBackgroundBox[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, inventoryBackgroundBox[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryBackgroundBox[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryBackgroundBox[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryBackgroundBox[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryBackgroundBox[playerid], 175);
+	PlayerTextDrawUseBox(playerid, inventoryBackgroundBox[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryBackgroundBox[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryBackgroundBox[playerid], 0);
+
+	inventoryTitleBox[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 112.000000, "_");
+	PlayerTextDrawFont(playerid, inventoryTitleBox[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, inventoryTitleBox[playerid], 0.600000, 1.199995);
+	PlayerTextDrawTextSize(playerid, inventoryTitleBox[playerid], 296.000000, 305.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTitleBox[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, inventoryTitleBox[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTitleBox[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryTitleBox[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTitleBox[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTitleBox[playerid], -8388408);
+	PlayerTextDrawUseBox(playerid, inventoryTitleBox[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryTitleBox[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTitleBox[playerid], 0);
+
+	inventoryButtonClose[playerid] = CreatePlayerTextDraw(playerid, 196.000000, 281.000000, "SCHLIESSEN");
+	PlayerTextDrawFont(playerid, inventoryButtonClose[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonClose[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonClose[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonClose[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonClose[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonClose[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonClose[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonClose[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonClose[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonClose[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonClose[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonClose[playerid], 1);
+
+	inventoryButtonSettings[playerid] = CreatePlayerTextDraw(playerid, 258.000000, 281.000000, "EINSTELLUNG");
+	PlayerTextDrawFont(playerid, inventoryButtonSettings[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonSettings[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonSettings[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonSettings[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonSettings[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonSettings[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonSettings[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonSettings[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonSettings[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonSettings[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonSettings[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonSettings[playerid], 1);
+
+	inventoryButtonGangmenu[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 281.000000, "GANGMENU");
+	PlayerTextDrawFont(playerid, inventoryButtonGangmenu[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonGangmenu[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonGangmenu[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonGangmenu[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonGangmenu[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonGangmenu[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonGangmenu[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonGangmenu[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonGangmenu[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonGangmenu[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonGangmenu[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonGangmenu[playerid], 1);
+
+	inventoryButtonKeys[playerid] = CreatePlayerTextDraw(playerid, 382.000000, 281.000000, "SCHLUESSEL");
+	PlayerTextDrawFont(playerid, inventoryButtonKeys[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonKeys[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonKeys[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonKeys[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonKeys[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonKeys[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonKeys[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonKeys[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonKeys[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonKeys[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonKeys[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonKeys[playerid], 1);
+
+	inventoryButtonSMS[playerid] = CreatePlayerTextDraw(playerid, 444.000000, 281.000000, "SMS");
+	PlayerTextDrawFont(playerid, inventoryButtonSMS[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonSMS[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonSMS[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonSMS[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonSMS[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonSMS[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonSMS[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonSMS[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonSMS[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonSMS[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonSMS[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonSMS[playerid], 1);
+
+	inventoryButtonUpdate[playerid] = CreatePlayerTextDraw(playerid, 196.000000, 297.000000, "UPDATE");
+	PlayerTextDrawFont(playerid, inventoryButtonUpdate[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonUpdate[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonUpdate[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonUpdate[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonUpdate[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonUpdate[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonUpdate[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonUpdate[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonUpdate[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonUpdate[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonUpdate[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonUpdate[playerid], 1);
+
+	inventoryButtonAdmin[playerid] = CreatePlayerTextDraw(playerid, 258.000000, 297.000000, "ADMINMENU");
+	PlayerTextDrawFont(playerid, inventoryButtonAdmin[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonAdmin[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonAdmin[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonAdmin[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonAdmin[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonAdmin[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonAdmin[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonAdmin[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonAdmin[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonAdmin[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonAdmin[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonAdmin[playerid], 1);
+
+	inventoryButtonGroups[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 297.000000, "GRUPPEN");
+	PlayerTextDrawFont(playerid, inventoryButtonGroups[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonGroups[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonGroups[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonGroups[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonGroups[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonGroups[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonGroups[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonGroups[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonGroups[playerid], 200);
+	PlayerTextDrawUseBox(playerid, inventoryButtonGroups[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonGroups[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonGroups[playerid], 1);
+
+	inventoryTextMenu[playerid] = CreatePlayerTextDraw(playerid, 168.000000, 110.000000, "Spielermenu");
+	PlayerTextDrawFont(playerid, inventoryTextMenu[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, inventoryTextMenu[playerid], 0.204162, 1.500000);
+	PlayerTextDrawTextSize(playerid, inventoryTextMenu[playerid], -1.500000, 10.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextMenu[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextMenu[playerid], 1);
+	PlayerTextDrawAlignment(playerid, inventoryTextMenu[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextMenu[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextMenu[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTextMenu[playerid], 50);
+	PlayerTextDrawUseBox(playerid, inventoryTextMenu[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, inventoryTextMenu[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextMenu[playerid], 0);
+
+	inventoryTextWeight[playerid] = CreatePlayerTextDraw(playerid, 470.000000, 111.000000, "Weight: 144 / 144");
+	PlayerTextDrawFont(playerid, inventoryTextWeight[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, inventoryTextWeight[playerid], 0.208333, 1.200000);
+	PlayerTextDrawTextSize(playerid, inventoryTextWeight[playerid], -4.000000, 5.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextWeight[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextWeight[playerid], 1);
+	PlayerTextDrawAlignment(playerid, inventoryTextWeight[playerid], 3);
+	PlayerTextDrawColor(playerid, inventoryTextWeight[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextWeight[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTextWeight[playerid], 50);
+	PlayerTextDrawUseBox(playerid, inventoryTextWeight[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, inventoryTextWeight[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextWeight[playerid], 0);
+
+	inventoryBoxMoney[playerid] = CreatePlayerTextDraw(playerid, 171.000000, 133.000000, "Guthaben");
+	PlayerTextDrawFont(playerid, inventoryBoxMoney[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryBoxMoney[playerid], 0.200000, 1.299993);
+	PlayerTextDrawTextSize(playerid, inventoryBoxMoney[playerid], 260.000000, 76.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryBoxMoney[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryBoxMoney[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryBoxMoney[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryBoxMoney[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryBoxMoney[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryBoxMoney[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryBoxMoney[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryBoxMoney[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryBoxMoney[playerid], 0);
+
+	inventoryBoxLicenses[playerid] = CreatePlayerTextDraw(playerid, 267.000000, 133.000000, "Lizenzen");
+	PlayerTextDrawFont(playerid, inventoryBoxLicenses[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryBoxLicenses[playerid], 0.200000, 1.299993);
+	PlayerTextDrawTextSize(playerid, inventoryBoxLicenses[playerid], 355.000000, 76.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryBoxLicenses[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryBoxLicenses[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryBoxLicenses[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryBoxLicenses[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryBoxLicenses[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryBoxLicenses[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryBoxLicenses[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryBoxLicenses[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryBoxLicenses[playerid], 0);
+
+	inventoryBoxItems[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 133.000000, "Gegenstande");
+	PlayerTextDrawFont(playerid, inventoryBoxItems[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryBoxItems[playerid], 0.200000, 1.299993);
+	PlayerTextDrawTextSize(playerid, inventoryBoxItems[playerid], 465.000000, 76.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryBoxItems[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryBoxItems[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryBoxItems[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryBoxItems[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryBoxItems[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryBoxItems[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryBoxItems[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryBoxItems[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryBoxItems[playerid], 0);
+
+	inventoryImageCash[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 170.000000, "HUD:radar_cash");
+	PlayerTextDrawFont(playerid, inventoryImageCash[playerid], 4);
+	PlayerTextDrawLetterSize(playerid, inventoryImageCash[playerid], 0.600000, 2.000000);
+	PlayerTextDrawTextSize(playerid, inventoryImageCash[playerid], 9.000000, 10.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryImageCash[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, inventoryImageCash[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryImageCash[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryImageCash[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryImageCash[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryImageCash[playerid], 50);
+	PlayerTextDrawUseBox(playerid, inventoryImageCash[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryImageCash[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryImageCash[playerid], 0);
+
+	inventoryImageBank[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 153.000000, "HUD:radar_propertyg");
+	PlayerTextDrawFont(playerid, inventoryImageBank[playerid], 4);
+	PlayerTextDrawLetterSize(playerid, inventoryImageBank[playerid], 0.600000, 2.000000);
+	PlayerTextDrawTextSize(playerid, inventoryImageBank[playerid], 9.000000, 10.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryImageBank[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryImageBank[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryImageBank[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryImageBank[playerid], 9109759);
+	PlayerTextDrawBackgroundColor(playerid, inventoryImageBank[playerid], -16776961);
+	PlayerTextDrawBoxColor(playerid, inventoryImageBank[playerid], -1962934222);
+	PlayerTextDrawUseBox(playerid, inventoryImageBank[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryImageBank[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryImageBank[playerid], 0);
+
+	inventoryTextBankMoney[playerid] = CreatePlayerTextDraw(playerid, 187.000000, 153.000000, "8,781,741$");
+	PlayerTextDrawFont(playerid, inventoryTextBankMoney[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTextBankMoney[playerid], 0.154164, 1.149999);
+	PlayerTextDrawTextSize(playerid, inventoryTextBankMoney[playerid], 406.500000, 14.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextBankMoney[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextBankMoney[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTextBankMoney[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextBankMoney[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextBankMoney[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTextBankMoney[playerid], 50);
+	PlayerTextDrawUseBox(playerid, inventoryTextBankMoney[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, inventoryTextBankMoney[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextBankMoney[playerid], 0);
+
+	inventoryTextCashMoney[playerid] = CreatePlayerTextDraw(playerid, 187.000000, 170.000000, "1,576$");
+	PlayerTextDrawFont(playerid, inventoryTextCashMoney[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTextCashMoney[playerid], 0.154164, 1.149999);
+	PlayerTextDrawTextSize(playerid, inventoryTextCashMoney[playerid], 406.500000, 14.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextCashMoney[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextCashMoney[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTextCashMoney[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextCashMoney[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextCashMoney[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTextCashMoney[playerid], 50);
+	PlayerTextDrawUseBox(playerid, inventoryTextCashMoney[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, inventoryTextCashMoney[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextCashMoney[playerid], 0);
+
+	inventoryButtonGiveMoney[playerid] = CreatePlayerTextDraw(playerid, 211.000000, 211.000000, "Geben");
+	PlayerTextDrawFont(playerid, inventoryButtonGiveMoney[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonGiveMoney[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonGiveMoney[playerid], 10.000000, 58.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonGiveMoney[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonGiveMoney[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonGiveMoney[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonGiveMoney[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonGiveMoney[playerid], -8388353);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonGiveMoney[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryButtonGiveMoney[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonGiveMoney[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonGiveMoney[playerid], 1);
+
+	inventoryTextGiveMoney[playerid] = CreatePlayerTextDraw(playerid, 176.000000, 191.000000, "1000000");
+	PlayerTextDrawFont(playerid, inventoryTextGiveMoney[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTextGiveMoney[playerid], 0.141662, 1.200001);
+	PlayerTextDrawTextSize(playerid, inventoryTextGiveMoney[playerid], 246.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextGiveMoney[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextGiveMoney[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTextGiveMoney[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextGiveMoney[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextGiveMoney[playerid], -1);
+	PlayerTextDrawBoxColor(playerid, inventoryTextGiveMoney[playerid], 135);
+	PlayerTextDrawUseBox(playerid, inventoryTextGiveMoney[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryTextGiveMoney[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextGiveMoney[playerid], 1);
+
+	inventoryTestListLicenses[playerid] = CreatePlayerTextDraw(playerid, 270.000000, 147.000000, "Fuererschein Pilotenschein Marihuanaveredlung Diamantverarbeitung");
+	PlayerTextDrawFont(playerid, inventoryTestListLicenses[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTestListLicenses[playerid], 0.145833, 1.150007);
+	PlayerTextDrawTextSize(playerid, inventoryTestListLicenses[playerid], 299.500000, 79.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryTestListLicenses[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTestListLicenses[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTestListLicenses[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTestListLicenses[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTestListLicenses[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTestListLicenses[playerid], 135);
+	PlayerTextDrawUseBox(playerid, inventoryTestListLicenses[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, inventoryTestListLicenses[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTestListLicenses[playerid], 0);
+
+	inventoryTextListItems[playerid] = CreatePlayerTextDraw(playerid, 367.000000, 154.000000, "3x-Pausenbrot 3x-Bananenshake 10x-Nagelband 9x-Banane");
+	PlayerTextDrawFont(playerid, inventoryTextListItems[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTextListItems[playerid], 0.145833, 1.150007);
+	PlayerTextDrawTextSize(playerid, inventoryTextListItems[playerid], 449.000000, 201.500000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextListItems[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextListItems[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTextListItems[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextListItems[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextListItems[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, inventoryTextListItems[playerid], 1296911751);
+	PlayerTextDrawUseBox(playerid, inventoryTextListItems[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryTextListItems[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextListItems[playerid], 0);
+
+	inventoryTextItemAmount[playerid] = CreatePlayerTextDraw(playerid, 369.000000, 247.000000, "1000000");
+	PlayerTextDrawFont(playerid, inventoryTextItemAmount[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryTextItemAmount[playerid], 0.141662, 1.200001);
+	PlayerTextDrawTextSize(playerid, inventoryTextItemAmount[playerid], 469.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryTextItemAmount[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryTextItemAmount[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryTextItemAmount[playerid], 1);
+	PlayerTextDrawColor(playerid, inventoryTextItemAmount[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryTextItemAmount[playerid], -1);
+	PlayerTextDrawBoxColor(playerid, inventoryTextItemAmount[playerid], 135);
+	PlayerTextDrawUseBox(playerid, inventoryTextItemAmount[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryTextItemAmount[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryTextItemAmount[playerid], 1);
+
+	inventoryButtonItemUse[playerid] = CreatePlayerTextDraw(playerid, 393.000000, 263.000000, "Benutzen");
+	PlayerTextDrawFont(playerid, inventoryButtonItemUse[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonItemUse[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonItemUse[playerid], 10.000000, 47.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonItemUse[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonItemUse[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonItemUse[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonItemUse[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonItemUse[playerid], -8388353);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonItemUse[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryButtonItemUse[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonItemUse[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonItemUse[playerid], 1);
+
+	inventoryButtonItemGive[playerid] = CreatePlayerTextDraw(playerid, 445.000000, 263.000000, "Geben");
+	PlayerTextDrawFont(playerid, inventoryButtonItemGive[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, inventoryButtonItemGive[playerid], 0.200000, 1.299980);
+	PlayerTextDrawTextSize(playerid, inventoryButtonItemGive[playerid], 10.000000, 47.000000);
+	PlayerTextDrawSetOutline(playerid, inventoryButtonItemGive[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, inventoryButtonItemGive[playerid], 0);
+	PlayerTextDrawAlignment(playerid, inventoryButtonItemGive[playerid], 2);
+	PlayerTextDrawColor(playerid, inventoryButtonItemGive[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, inventoryButtonItemGive[playerid], -8388353);
+	PlayerTextDrawBoxColor(playerid, inventoryButtonItemGive[playerid], -8388508);
+	PlayerTextDrawUseBox(playerid, inventoryButtonItemGive[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, inventoryButtonItemGive[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, inventoryButtonItemGive[playerid], 1);
 	return true;
 }

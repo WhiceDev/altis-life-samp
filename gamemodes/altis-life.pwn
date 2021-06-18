@@ -52,7 +52,9 @@ enum E_PLAYER {
 	bool:pLogged,
 	pPassword[61],
 	bool:pSideChat,
-	bool:pInventoryOpend
+	bool:pInventoryOpend,
+	pCash,
+	pBank
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -109,13 +111,13 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 /*
  *
  * TEXTDRAW INFOS
- * ï¿½ == \150;
- * ï¿½ == \145;
- * ï¿½ == \168;
- * ï¿½ == \149;
- * ï¿½ == \172;
- * ï¿½ == \131;
- * ï¿½ == \154;
+ * ß == \150;
+ * Ö == \145;
+ * ö == \168;
+ * Ü == \149;
+ * ü == \172;
+ * Ä == \131;
+ * ä == \154;
  * STERN == \95;
  *
 */
@@ -442,6 +444,8 @@ function OnUserCreate(playerid) {
 function OnUserLogin(playerid) {
 	
 	cache_get_value_name_int(0, "id", pInfo[playerid][pDBID]);
+	cache_get_value_name_int(0, "cash", pInfo[playerid][pCash]);
+	cache_get_value_name_int(0, "bank", pInfo[playerid][pBank]);
 	
 	
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
@@ -595,7 +599,7 @@ CMD:inventory(playerid, params[]) {
  *
  */
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
-	//1064 prï¿½fen
+	//1064 prüfen
 	switch(errorid) {
 		case CR_SERVER_GONE_ERROR: {
 			printf("[FEHLER] Datenbankverbindung (ID: %d) unterbrochen: %s | Abfrage: %s | Callback: %s", _:handle, error, query, callback);
@@ -635,7 +639,7 @@ stock CreateUserTable() {
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
 		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
-		`cash` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (cash)'");
+		`cash` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (cash)',");
 	format(query2, sizeof(query2), "\
 		%s`bank` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (on bank-account)',\
 		PRIMARY KEY (`id`) USING BTREE", query2);
@@ -648,12 +652,78 @@ stock CreateUserTable() {
 	return true;
 }
 
+
+/*
+ *
+ *	Dieses Callback wird aufgerufen, wenn ein Spieler auf ein auswählbares Player-TextDraw klickt.
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid    Die ID des Spielers
+ *  @param  playertextid    Die ID des ausgewählten Player-TextDraws.
+ */
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     // Text-Draw 'Schließen' wurde angeklickt
     if(playertextid == inventoryButtonClose[playerid]) {
         HideInventoryTextDraws(playerid);
         pInfo[playerid][pInventoryOpend] = false;
     }
+    // Text-Draw 'Update' wurde angeklickt
+	else if(playertextid == inventoryButtonUpdate[playerid]) {
+	    SavePlayer(playerid);
+	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion updated die Datenbank mit den aktuellen Werten des Spielers
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid    Die ID des Spielers
+ */
+stock SavePlayer(playerid) {
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', 'cash' = '%d' WHERE `name` == '%e' AND `id` = '%d'",
+		pInfo[playerid][pBank], pInfo[playerid][pCash], GetName(playerid), pInfo[playerid][pDBID]);
+	mysql_tquery(dbhandle, query);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion wandelt eine eingehende Zahl
+ *	in einen String mit ',' alle 3 Stellen um
+ *	Geschrieben von Kaliber: https://breadfish.de/wcf/user/13893-kaliber/
+ *
+ *	@param  money   Umzuwandelnde Zahl
+ *	@return Zahl als String mit ',' als Dezimal-Punkt
+ */
+stock formatMoney(money) {
+	new str[24], i;
+	valstr(str, money);
+	i = (money > 0) ? strlen(str) - 3 : strlen(str) - 4;
+	for(; i > 0; i -= 3) {
+		strins(str, ",", (money > 0) ? i : i + 1, 24);
+	}
+	return str;
+}
+
+/*
+ *
+ *	Diese Funktion setzt die variablen Werte im Inventar-System
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock SetInventoryTextDrawValues(playerid) {
+	// Seztzt den Konto Wert
+	new string[128];
+	format(string, sizeof(string), "$%s", formatMoney(pInfo[playerid][pBank]));
+    PlayerTextDrawSetString(playerid, inventoryTextBankMoney[playerid], string);
+    
+    // Setzt das Bargeld
+    format(string, sizeof(string), "$%s", formatMoney(pInfo[playerid][pCash]));
+	PlayerTextDrawSetString(playerid, inventoryTextCashMoney[playerid], string);
 	return true;
 }
 
@@ -692,6 +762,8 @@ stock ShowInventoryTextDraws(playerid) {
 	PlayerTextDrawShow(playerid, inventoryButtonItemUse[playerid]);
 	PlayerTextDrawShow(playerid, inventoryButtonItemGive[playerid]);
 	SelectTextDraw(playerid, COLOR_ORANGE);
+	
+	SetInventoryTextDrawValues(playerid);
 	return true;
 }
 

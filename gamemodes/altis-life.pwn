@@ -106,6 +106,20 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 	PlayerText:inventoryButtonItemUse[MAX_PLAYERS],
 	PlayerText:inventoryButtonItemGive[MAX_PLAYERS];
 
+/*
+ *
+ * TEXTDRAW INFOS
+ * � == \150;
+ * � == \145;
+ * � == \168;
+ * � == \149;
+ * � == \172;
+ * � == \131;
+ * � == \154;
+ * STERN == \95;
+ *
+*/
+
 
 
 main() {}
@@ -752,7 +766,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryTitleBox[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryTitleBox[playerid], 0);
 
-	inventoryButtonClose[playerid] = CreatePlayerTextDraw(playerid, 196.000000, 281.000000, "SCHLIESSEN");
+	inventoryButtonClose[playerid] = CreatePlayerTextDraw(playerid, 196.000000, 281.000000, "SCHLIE\150;EN");
 	PlayerTextDrawFont(playerid, inventoryButtonClose[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, inventoryButtonClose[playerid], 0.200000, 1.299980);
 	PlayerTextDrawTextSize(playerid, inventoryButtonClose[playerid], 10.000000, 58.000000);
@@ -780,7 +794,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryButtonSettings[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryButtonSettings[playerid], 1);
 
-	inventoryButtonGangmenu[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 281.000000, "GANGMENU");
+	inventoryButtonGangmenu[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 281.000000, "GANGMEN\149;");
 	PlayerTextDrawFont(playerid, inventoryButtonGangmenu[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, inventoryButtonGangmenu[playerid], 0.200000, 1.299980);
 	PlayerTextDrawTextSize(playerid, inventoryButtonGangmenu[playerid], 10.000000, 58.000000);
@@ -794,7 +808,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryButtonGangmenu[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryButtonGangmenu[playerid], 1);
 
-	inventoryButtonKeys[playerid] = CreatePlayerTextDraw(playerid, 382.000000, 281.000000, "SCHLUESSEL");
+	inventoryButtonKeys[playerid] = CreatePlayerTextDraw(playerid, 382.000000, 281.000000, "SCHL\149;SSEL");
 	PlayerTextDrawFont(playerid, inventoryButtonKeys[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, inventoryButtonKeys[playerid], 0.200000, 1.299980);
 	PlayerTextDrawTextSize(playerid, inventoryButtonKeys[playerid], 10.000000, 58.000000);
@@ -836,7 +850,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryButtonUpdate[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryButtonUpdate[playerid], 1);
 
-	inventoryButtonAdmin[playerid] = CreatePlayerTextDraw(playerid, 258.000000, 297.000000, "ADMINMENU");
+	inventoryButtonAdmin[playerid] = CreatePlayerTextDraw(playerid, 258.000000, 297.000000, "ADMINMEN\149;");
 	PlayerTextDrawFont(playerid, inventoryButtonAdmin[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, inventoryButtonAdmin[playerid], 0.200000, 1.299980);
 	PlayerTextDrawTextSize(playerid, inventoryButtonAdmin[playerid], 10.000000, 58.000000);
@@ -864,7 +878,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryButtonGroups[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryButtonGroups[playerid], 1);
 
-	inventoryTextMenu[playerid] = CreatePlayerTextDraw(playerid, 168.000000, 110.000000, "Spielermenu");
+	inventoryTextMenu[playerid] = CreatePlayerTextDraw(playerid, 168.000000, 110.000000, "Spielermen\172;");
 	PlayerTextDrawFont(playerid, inventoryTextMenu[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, inventoryTextMenu[playerid], 0.204162, 1.500000);
 	PlayerTextDrawTextSize(playerid, inventoryTextMenu[playerid], -1.500000, 10.500000);
@@ -920,7 +934,7 @@ stock LoadInventoryTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, inventoryBoxLicenses[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, inventoryBoxLicenses[playerid], 0);
 
-	inventoryBoxItems[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 133.000000, "Gegenstande");
+	inventoryBoxItems[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 133.000000, "Gegenst\154;nde");
 	PlayerTextDrawFont(playerid, inventoryBoxItems[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, inventoryBoxItems[playerid], 0.200000, 1.299993);
 	PlayerTextDrawTextSize(playerid, inventoryBoxItems[playerid], 465.000000, 76.000000);

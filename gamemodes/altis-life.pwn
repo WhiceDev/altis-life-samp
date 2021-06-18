@@ -612,19 +612,31 @@ stock CreateDatabaseTables() {
  *
  */
 stock CreateUserTable() {
-    new query[500], query2[500];
+    new query[2000], query2[1000];
     format(query2, sizeof(query2), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
 		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
-		PRIMARY KEY (`id`) USING BTREE");
+		`cash` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (cash)'");
+	format(query2, sizeof(query2), "\
+		%s`bank` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (on bank-account)',\
+		PRIMARY KEY (`id`) USING BTREE", query2);
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (%s)\
 	COMMENT='all user informations'\
 	COLLATE='utf8mb4_general_ci'\
 	ENGINE=InnoDB;", query2);
 	mysql_tquery(dbhandle, query);
 	
+	return true;
+}
+
+public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
+    // Text-Draw 'Schlieﬂen' wurde angeklickt
+    if(playertextid == inventoryButtonClose[playerid]) {
+        HideInventoryTextDraws(playerid);
+        pInfo[playerid][pInventoryOpend] = false;
+    }
 	return true;
 }
 

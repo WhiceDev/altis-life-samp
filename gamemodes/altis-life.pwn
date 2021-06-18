@@ -509,7 +509,16 @@ stock mysqlConnect() {
 	return true;
 }
 
-
+/*
+ *
+ *	Dieser Befehl schaltet nichteingabe von Parametern den Side-Chat aus/aus
+ *  Wenn Parameter eingegeben werden, werden diese im Side-Chat ausgegeben
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
 CMD:side(playerid, params[]) {
 	new message[140], string[144];
 	if(sscanf(params, "s[100]", message)) {

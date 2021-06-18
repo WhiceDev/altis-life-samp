@@ -587,6 +587,29 @@ CMD:inventory(playerid, params[]) {
 
 /*
  *
+ *	Dieser Befehl erstellt ein Fahrzeug (Develop Befehl)
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+ // TODO: Entfernen (Develop Befehl)
+CMD:v(playerid, params[]) {
+	new vID;
+	if(sscanf(params, "d", vID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /v [Vehicle-ID]");
+	if(vID < 400 || vID > 611) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" VehicleID muss zwischen 400-611 liegen");
+	new Float:Pos[4];
+	GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
+	GetPlayerFacingAngle(playerid, Pos[3]);
+	new const vehicle = CreateVehicle(vID, Pos[0], Pos[1], Pos[2], Pos[3], 211, 211, -1, 1);
+	PutPlayerInVehicle(playerid, vehicle, -1);
+	return true;
+}
+
+
+/*
+ *
  *	Dieser Callback wird aufgerufen, wenn der Zustand einer beliebigen unterstützten
  *	Taste geändert wird (gedrückt/freigegeben).
  *	Richtungstasten lösen OnPlayerKeyStateChange (oben/unten/links/rechts) nicht aus.

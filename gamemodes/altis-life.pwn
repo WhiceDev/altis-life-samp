@@ -67,7 +67,10 @@ enum E_FIELDS {
 	Float:fieldMinY,
 	Float:fieldMaxX,
 	Float:fieldMaxY,
-	fieldColor
+	Float:fieldZ,
+	fieldColor,
+	fieldAreaId,
+	fieldMapIcon
 };
 
 // Farben definieren
@@ -139,9 +142,9 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 // Felder
 new const fields[][E_FIELDS] = {
 //  {id, name, minx, miny, max, maxy}
-	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, COLOR_ORANGE},
-	{1, "Banenen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, COLOR_YELLOW},
-	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, COLOR_BROWN}
+	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE},
+	{1, "Banenen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW},
+	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, 14.5532, COLOR_BROWN}
 };
 
 
@@ -166,7 +169,7 @@ public OnGameModeInit() {
 	CreateDatabaseTables();
 	
 	// Erstelle Abbau Felder
-	//CreateMiningFields();
+	CreateMiningFields();
 	return true;
 }
 
@@ -178,9 +181,40 @@ public OnGameModeInit() {
  */
 stock CreateMiningFields() {
 	for(new i = 0; i < sizeof(fields); i++) {
-	    new field = GangZoneCreate(fields[i][fieldMinX], fields[i][fieldMinY], fields[i][fieldMaxX], fields[i][fieldMaxY]);
-	    GangZoneShowForAll(field, fields[i][fieldColor]);
-	    printf("Feld %d erstellt", i);
+	    fields[i][fieldId] = GangZoneCreate(fields[i][fieldMinX], fields[i][fieldMinY], fields[i][fieldMaxX], fields[i][fieldMaxY]);
+	    GangZoneShowForAll(fields[i][fieldId], fields[i][fieldColor]);
+	    fields[i][fieldAreaId] = CreateDynamicRectangle(fields[i][fieldMinX], fields[i][fieldMinY], fields[i][fieldMaxX], fields[i][fieldMaxY]);
+
+		// Die Koordinaten der Mitte der Area rausfinden
+		new const Float:x = fields[i][fieldMinX] + (fields[i][fieldMaxX] - fields[i][fieldMinX]),
+		Float:y = fields[i][fieldMinY] + (fields[i][fieldMaxY] - fields[i][fieldMinY]);
+
+
+	    fields[i][fieldMapIcon] = CreateDynamicMapIcon(x, y, fields[i][fieldZ], 0, fields[i][fieldColor]);
+	}
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Spieler eine dynamische Area betritt
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers der den Server betreten hat
+ *	@params areaid    	Die Area, die der Spieler betreten hat
+ *
+ */
+public OnPlayerEnterDynamicArea(playerid, areaid) {
+    // Schleife über alle Bereiche
+	for(new i = 0; i <  sizeof(fields); i++) {
+		// Wenn es nicht die betroffene Area ist
+	    if(fields[i][fieldAreaId] != areaid) continue;
+	    
+	    // Zeige Spieler Nachricht, welches Feld er betreten hat
+	    new string[128];
+		format(string, sizeof(string), "=> %s betreten", fields[i][fieldName]);
+		SendClientMessage(playerid, fields[i][fieldColor], string);
+		break;
 	}
 	return true;
 }

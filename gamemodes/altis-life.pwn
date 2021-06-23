@@ -769,21 +769,55 @@ stock CreateDatabaseTables() {
  *
  */
 stock CreateUserTable() {
-    new query[2000], query2[1000];
-    format(query2, sizeof(query2), "\
+    new query[2300];
+    format(query, sizeof(query), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
 		`password` VARCHAR(61) NOT NULL COMMENT 'password (bcrypt encrypted)' COLLATE 'utf8mb4_general_ci',\
 		`salt` VARCHAR(11) NOT NULL COMMENT 'unique salt to protect password' COLLATE 'utf8mb4_general_ci',\
 		`cash` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (cash)',");
-	format(query2, sizeof(query2), "\
+	format(query, sizeof(query), "\
 		%s`bank` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (on bank-account)',\
 		`skin` INT(11) NOT NULL DEFAULT '88' COMMENT 'skin model',\
-		PRIMARY KEY (`id`) USING BTREE", query2);
+		`weapon0` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 0',\
+		`ammo0` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 0',\
+  		`weapon1` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 1',\
+  		`ammo1` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 1',", query);
+    format(query, sizeof(query), "\
+		%s`weapon2` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 2',\
+  		`ammo2` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 2',\
+  		`weapon3` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 3',\
+		`ammo3` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 3',\
+		`weapon4` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 4',\
+		`ammo4` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 4',", query);
+    format(query, sizeof(query), "\
+		%s`weapon5` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 5',\
+		`ammo5` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 5',\
+		`weapon6` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 6',\
+		`ammo6` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 6',\
+		`weapon7` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 7',\
+		`ammo7` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 7',", query);
+    format(query, sizeof(query), "\
+		%s`weapon8` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 8',\
+		`ammo8` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 8',\
+		`weapon9` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 9',\
+		`ammo9` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 9',\
+		`weapon10` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 10',\
+		`ammo10` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 10',", query);
+    format(query, sizeof(query), "\
+		%s`weapon11` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 11',\
+		`ammo11` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 11',\
+		`weapon12` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 12',\
+		`ammo12` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 12',\
+		PRIMARY KEY (`id`) USING BTREE", query);
+		
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (%s)\
 	COMMENT='all user informations'\
 	COLLATE='utf8mb4_general_ci'\
-	ENGINE=InnoDB;", query2);
+	ENGINE=InnoDB;", query);
+	
+	//printf("query: %d", strlen(query)); // 2271
+	
 	mysql_tquery(dbhandle, query);
 	
 	return true;

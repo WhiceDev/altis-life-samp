@@ -529,7 +529,7 @@ function OnUserCreate(playerid) {
 	pInfo[playerid][pDBID] = cache_insert_id();
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich registriert");
 	pInfo[playerid][pLogged] = true;
-	TogglePlayerSpectating(playerid, false);
+	UnSpectate(playerid);
 	
 	// Zeige Verbindungs-Nachricht an
 	new string[144];
@@ -547,6 +547,10 @@ function OnUserCreate(playerid) {
  *
  */
 function OnUserLogin(playerid) {
+
+    SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
+	pInfo[playerid][pLogged] = true;
+	UnSpectate(playerid);
 	
 	cache_get_value_name_int(0, "id", pInfo[playerid][pDBID]);
 	cache_get_value_name_int(0, "cash", pInfo[playerid][pCash]);
@@ -555,46 +559,55 @@ function OnUserLogin(playerid) {
 	
 	cache_get_value_name_int(0, "weapon0", pInfo[playerid][pWeapon0]);
 	cache_get_value_name_int(0, "ammo0", pInfo[playerid][pAmmo0]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon0], pInfo[playerid][pAmmo0]);
 	
 	cache_get_value_name_int(0, "weapon1", pInfo[playerid][pWeapon1]);
 	cache_get_value_name_int(0, "ammo1", pInfo[playerid][pAmmo1]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon1], pInfo[playerid][pAmmo1]);
 	
 	cache_get_value_name_int(0, "weapon2", pInfo[playerid][pWeapon2]);
 	cache_get_value_name_int(0, "ammo2", pInfo[playerid][pAmmo2]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon2], pInfo[playerid][pAmmo2]);
 	
 	cache_get_value_name_int(0, "weapon3", pInfo[playerid][pWeapon3]);
 	cache_get_value_name_int(0, "ammo3", pInfo[playerid][pAmmo3]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon3], pInfo[playerid][pAmmo3]);
 	
 	cache_get_value_name_int(0, "weapon4", pInfo[playerid][pWeapon4]);
 	cache_get_value_name_int(0, "ammo4", pInfo[playerid][pAmmo4]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon4], pInfo[playerid][pAmmo4]);
 	
 	cache_get_value_name_int(0, "weapon5", pInfo[playerid][pWeapon5]);
 	cache_get_value_name_int(0, "ammo5", pInfo[playerid][pAmmo5]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon5], pInfo[playerid][pAmmo5]);
 	
 	cache_get_value_name_int(0, "weapon6", pInfo[playerid][pWeapon6]);
 	cache_get_value_name_int(0, "ammo6", pInfo[playerid][pAmmo6]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon6], pInfo[playerid][pAmmo6]);
 	
 	cache_get_value_name_int(0, "weapon7", pInfo[playerid][pWeapon7]);
 	cache_get_value_name_int(0, "ammo7", pInfo[playerid][pAmmo7]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon7], pInfo[playerid][pAmmo7]);
 	
 	cache_get_value_name_int(0, "weapon8", pInfo[playerid][pWeapon8]);
 	cache_get_value_name_int(0, "ammo8", pInfo[playerid][pAmmo8]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon8], pInfo[playerid][pAmmo8]);
 	
 	cache_get_value_name_int(0, "weapon9", pInfo[playerid][pWeapon9]);
 	cache_get_value_name_int(0, "ammo9", pInfo[playerid][pAmmo9]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon9], pInfo[playerid][pAmmo9]);
 	
 	cache_get_value_name_int(0, "weapon10", pInfo[playerid][pWeapon10]);
 	cache_get_value_name_int(0, "ammo10", pInfo[playerid][pAmmo10]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon10], pInfo[playerid][pAmmo10]);
 	
 	cache_get_value_name_int(0, "weapon11", pInfo[playerid][pWeapon11]);
 	cache_get_value_name_int(0, "ammo11", pInfo[playerid][pAmmo11]);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon11], pInfo[playerid][pAmmo11]);
 	
 	cache_get_value_name_int(0, "weapon12", pInfo[playerid][pWeapon12]);
 	cache_get_value_name_int(0, "ammo12", pInfo[playerid][pAmmo12]);
-	
-	SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
-	pInfo[playerid][pLogged] = true;
-	TogglePlayerSpectating(playerid, false);
+	GivePlayerWeapon(playerid, pInfo[playerid][pWeapon12], pInfo[playerid][pAmmo12]);
 	
 	SetPlayerSkin(playerid, pInfo[playerid][pSkin]);
 
@@ -919,9 +932,19 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
  *	@param  playerid    Die ID des Spielers
  */
 stock SavePlayer(playerid) {
-	new query[256];
-	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', `cash` = '%d', `skin` = '%d' WHERE `name` == '%e' AND `id` = '%d'",
-		pInfo[playerid][pBank], pInfo[playerid][pCash], pInfo[playerid][pSkin], GetName(playerid), pInfo[playerid][pDBID]);
+	new query[600];
+	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', `cash` = '%d', `skin` = '%d', `weapon0` = '%d', `ammo0` = '%d', `weapon1` = '%d', `ammo1` = '%d', `weapon2` = '%d', `ammo2` = '%d', `weapon3` = '%d',",
+		pInfo[playerid][pBank], pInfo[playerid][pCash], pInfo[playerid][pSkin], pInfo[playerid][pWeapon0], pInfo[playerid][pAmmo0], pInfo[playerid][pWeapon1],
+		pInfo[playerid][pAmmo1], pInfo[playerid][pWeapon2], pInfo[playerid][pAmmo2], pInfo[playerid][pWeapon3]);
+		
+	mysql_format(dbhandle, query, sizeof(query), "%s`ammo3` = '%d', `weapon4` = '%d', `ammo4` = '%d', `weapon5` = '%d', `ammo5` = '%d', `weapon6` = '%d', `ammo6` = '%d', `weapon7` = '%d', `ammo7` = '%d', `weapon8` = '%d',",
+	     query, pInfo[playerid][pAmmo3], pInfo[playerid][pWeapon4], pInfo[playerid][pAmmo4], pInfo[playerid][pWeapon5], pInfo[playerid][pAmmo5], pInfo[playerid][pWeapon6],
+		 pInfo[playerid][pAmmo6], pInfo[playerid][pWeapon7], pInfo[playerid][pAmmo7], pInfo[playerid][pWeapon8]);
+
+	mysql_format(dbhandle, query, sizeof(query), "%s`ammo8` = '%d',`weapon9` = '%d',`ammo9` = '%d', `weapon10` = '%d', `ammo10` = '%d', `weapon11` = '%d', `ammo11` = '%d', `weapon12` = '%d', `ammo12` = '%d' WHERE `name` = '%e' AND `id` = '%d'",
+		query, pInfo[playerid][pAmmo8], pInfo[playerid][pWeapon9], pInfo[playerid][pAmmo9], pInfo[playerid][pWeapon10], pInfo[playerid][pAmmo10], pInfo[playerid][pWeapon11], pInfo[playerid][pAmmo11],
+		pInfo[playerid][pWeapon12], pInfo[playerid][pAmmo12], GetName(playerid), pInfo[playerid][pDBID]);
+		
 	mysql_tquery(dbhandle, query);
 	return true;
 }

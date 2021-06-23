@@ -3,6 +3,7 @@
 #include <bcrypt>
 #include <zcmd>
 #include <sscanf2>
+#include <streamer>
 
 /* MySQL Daten */
 

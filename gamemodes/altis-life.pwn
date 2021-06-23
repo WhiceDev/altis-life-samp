@@ -190,7 +190,7 @@ stock CreateMiningFields() {
 		new const Float:x = fields[i][fieldMinX] + (fields[i][fieldMaxX] - fields[i][fieldMinX]),
 		Float:y = fields[i][fieldMinY] + (fields[i][fieldMaxY] - fields[i][fieldMinY]);
 
-
+		// Map Icon erstellen
 	    fields[i][fieldMapIcon] = CreateDynamicMapIcon(x, y, fields[i][fieldZ], 0, fields[i][fieldColor]);
 	}
 	return true;
@@ -659,21 +659,6 @@ CMD:inventory(playerid, params[]) {
 	    // Inventar öffnen
 	    ShowInventoryTextDraws(playerid);
 	}
-	return true;
-}
-
-/*
- *
- *	Dieser Befehl erstellt ein Abbau-Feld
- *	Dieser Befehl benutzt den Return-Wert nicht.
- *
- *	@param	playerid	Die ID des Spielers
- *	@param  params 		Eingegebenen Parameter
- *
- */
-CMD:feld(playerid, params[]) {
-	#pragma unused params
-	CreateMiningFields();
 	return true;
 }
 

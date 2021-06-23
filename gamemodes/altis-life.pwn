@@ -57,6 +57,7 @@ enum E_PLAYER {
 	bool:pInventoryOpend,
 	pCash,
 	pBank,
+	pSkin,
 	pArea
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
@@ -142,7 +143,7 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 
 // Felder
 new const fields[][E_FIELDS] = {
-//  {id, name, minx, miny, max, maxy}
+//  {id, name, minx, miny, max, maxy, höhe (z), farbe}
 	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE},
 	{1, "Banenen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW},
 	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, 14.5532, COLOR_BROWN}
@@ -524,11 +525,13 @@ function OnUserLogin(playerid) {
 	cache_get_value_name_int(0, "id", pInfo[playerid][pDBID]);
 	cache_get_value_name_int(0, "cash", pInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "bank", pInfo[playerid][pBank]);
-	
+	cache_get_value_name_int(0, "skin", pInfo[playerid][pSkin]);
 	
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
 	pInfo[playerid][pLogged] = true;
 	TogglePlayerSpectating(playerid, false);
+	
+	SetPlayerSkin(playerid, pInfo[playerid][pSkin]);
 
 	ShowConnectMessage(playerid);
 	return true;
@@ -775,6 +778,7 @@ stock CreateUserTable() {
 		`cash` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (cash)',");
 	format(query2, sizeof(query2), "\
 		%s`bank` INT(11) NOT NULL DEFAULT '0' COMMENT 'money (on bank-account)',\
+		`skin` INT(11) NOT NULL DEFAULT '88' COMMENT 'skin model',\
 		PRIMARY KEY (`id`) USING BTREE", query2);
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (%s)\
 	COMMENT='all user informations'\
@@ -817,8 +821,8 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
  */
 stock SavePlayer(playerid) {
 	new query[256];
-	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', `cash` = '%d' WHERE `name` == '%e' AND `id` = '%d'",
-		pInfo[playerid][pBank], pInfo[playerid][pCash], GetName(playerid), pInfo[playerid][pDBID]);
+	mysql_format(dbhandle, query, sizeof(query), "UPDATE `users` SET `bank` = '%d', `cash` = '%d', `skin` = '%d' WHERE `name` == '%e' AND `id` = '%d'",
+		pInfo[playerid][pBank], pInfo[playerid][pCash], pInfo[playerid][pSkin], GetName(playerid), pInfo[playerid][pDBID]);
 	mysql_tquery(dbhandle, query);
 	return true;
 }

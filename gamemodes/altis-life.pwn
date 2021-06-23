@@ -58,7 +58,33 @@ enum E_PLAYER {
 	pCash,
 	pBank,
 	pSkin,
-	pArea
+	pArea,
+	pWeapon0,
+	pAmmo0,
+	pWeapon1,
+	pAmmo1,
+	pWeapon2,
+	pAmmo2,
+	pWeapon3,
+	pAmmo3,
+	pWeapon4,
+	pAmmo4,
+	pWeapon5,
+	pAmmo5,
+	pWeapon6,
+	pAmmo6,
+	pWeapon7,
+	pAmmo7,
+	pWeapon8,
+	pAmmo8,
+	pWeapon9,
+	pAmmo9,
+	pWeapon10,
+	pAmmo10,
+	pWeapon11,
+	pAmmo11,
+	pWeapon12,
+	pAmmo12,
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -526,6 +552,45 @@ function OnUserLogin(playerid) {
 	cache_get_value_name_int(0, "cash", pInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "bank", pInfo[playerid][pBank]);
 	cache_get_value_name_int(0, "skin", pInfo[playerid][pSkin]);
+	
+	cache_get_value_name_int(0, "weapon0", pInfo[playerid][pWeapon0]);
+	cache_get_value_name_int(0, "ammo0", pInfo[playerid][pAmmo0]);
+	
+	cache_get_value_name_int(0, "weapon1", pInfo[playerid][pWeapon1]);
+	cache_get_value_name_int(0, "ammo1", pInfo[playerid][pAmmo1]);
+	
+	cache_get_value_name_int(0, "weapon2", pInfo[playerid][pWeapon2]);
+	cache_get_value_name_int(0, "ammo2", pInfo[playerid][pAmmo2]);
+	
+	cache_get_value_name_int(0, "weapon3", pInfo[playerid][pWeapon3]);
+	cache_get_value_name_int(0, "ammo3", pInfo[playerid][pAmmo3]);
+	
+	cache_get_value_name_int(0, "weapon4", pInfo[playerid][pWeapon4]);
+	cache_get_value_name_int(0, "ammo4", pInfo[playerid][pAmmo4]);
+	
+	cache_get_value_name_int(0, "weapon5", pInfo[playerid][pWeapon5]);
+	cache_get_value_name_int(0, "ammo5", pInfo[playerid][pAmmo5]);
+	
+	cache_get_value_name_int(0, "weapon6", pInfo[playerid][pWeapon6]);
+	cache_get_value_name_int(0, "ammo6", pInfo[playerid][pAmmo6]);
+	
+	cache_get_value_name_int(0, "weapon7", pInfo[playerid][pWeapon7]);
+	cache_get_value_name_int(0, "ammo7", pInfo[playerid][pAmmo7]);
+	
+	cache_get_value_name_int(0, "weapon8", pInfo[playerid][pWeapon8]);
+	cache_get_value_name_int(0, "ammo8", pInfo[playerid][pAmmo8]);
+	
+	cache_get_value_name_int(0, "weapon9", pInfo[playerid][pWeapon9]);
+	cache_get_value_name_int(0, "ammo9", pInfo[playerid][pAmmo9]);
+	
+	cache_get_value_name_int(0, "weapon10", pInfo[playerid][pWeapon10]);
+	cache_get_value_name_int(0, "ammo10", pInfo[playerid][pAmmo10]);
+	
+	cache_get_value_name_int(0, "weapon11", pInfo[playerid][pWeapon11]);
+	cache_get_value_name_int(0, "ammo11", pInfo[playerid][pAmmo11]);
+	
+	cache_get_value_name_int(0, "weapon12", pInfo[playerid][pWeapon12]);
+	cache_get_value_name_int(0, "ammo12", pInfo[playerid][pAmmo12]);
 	
 	SCM(playerid, COLOR_WHITE, "=> Erfolgreich eingeloggt");
 	pInfo[playerid][pLogged] = true;

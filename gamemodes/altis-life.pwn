@@ -56,7 +56,8 @@ enum E_PLAYER {
 	bool:pSideChat,
 	bool:pInventoryOpend,
 	pCash,
-	pBank
+	pBank,
+	pArea
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -214,6 +215,10 @@ public OnPlayerEnterDynamicArea(playerid, areaid) {
 	    new string[128];
 		format(string, sizeof(string), "=> %s betreten", fields[i][fieldName]);
 		SendClientMessage(playerid, fields[i][fieldColor], string);
+		
+		// Setzte Variable das Spieler in diesem Feld ist
+		pInfo[playerid][pArea] = areaid;
+		
 		break;
 	}
 	return true;
@@ -708,9 +713,23 @@ CMD:v(playerid, params[]) {
  *
  */
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+	// Wenn es kein Spieler, sondern ein NPC ist gehe nicht weiter
+	if(IsPlayerNPC(playerid)) return true;
+	
 	// Falls Taste 'Z' gedrückt wird => Öffne/Schließe Inventar
 	if(PRESSED(KEY_YES)) {
 	    cmd_inventory(playerid, "");
+	    
+ 	// Falls Taste 'N' gedrückt wird => Baue ab, wenn auf Feld
+	} else if(PRESSED(KEY_NO)) {
+	    // Wenn Spieler in keiner Abbau-Area ist gehe nicht weiter
+	    if(!IsPlayerInAnyDynamicArea(playerid)) return true;
+	    
+	    // Falls Spieler in für keine Area registiert ist gehe nicht weiter
+	    if(!IsValidDynamicArea(pInfo[playerid][pArea])) return true;
+	    
+	    SendClientMessage(playerid, COLOR_WHITE, "=> DEBUG MESSAGE: Abgebaut");
+	    
 	}
 	return true;
 }

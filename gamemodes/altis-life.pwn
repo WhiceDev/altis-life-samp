@@ -86,6 +86,7 @@ enum E_PLAYER {
 	pAmmo11,
 	pWeapon12,
 	pAmmo12,
+	pStorage
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -558,6 +559,7 @@ function OnUserLogin(playerid) {
 	cache_get_value_name_int(0, "cash", pInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "bank", pInfo[playerid][pBank]);
 	cache_get_value_name_int(0, "skin", pInfo[playerid][pSkin]);
+	cache_get_value_name_int(0, "storage", pInfo[playerid][pStorage]);
 	
 	cache_get_value_name_int(0, "weapon0", pInfo[playerid][pWeapon0]);
 	cache_get_value_name_int(0, "ammo0", pInfo[playerid][pAmmo0]);

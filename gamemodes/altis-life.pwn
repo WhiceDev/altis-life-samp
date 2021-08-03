@@ -745,6 +745,26 @@ CMD:inventory(playerid, params[]) {
 
 /*
  *
+ *	Dieser Befehl zeigt den Inhalt eines Storage an
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+CMD:getstorage(playerid, params[]) {
+	new storageID;
+	if(sscanf(params, "d", storageID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /getstorage [Storage-ID]");
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "SELECT `items`.`name`, `items`.`weight`, `storage_items`.`amount`, `storages`.`capacity` FROM\
+	`items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id`\
+	LEFT JOIN `storages` ON `storages`.`id` = `storage_items`.`storage_id` WHERE `storage_items`.`storage_id` = '%d'", storageID);
+	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "d", storageID);
+	return true;
+}
+
+/*
+ *
  *	Dieser Befehl erstellt ein Fahrzeug (Develop Befehl)
  *	Dieser Befehl benutzt den Return-Wert nicht.
  *

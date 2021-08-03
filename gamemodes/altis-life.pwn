@@ -99,6 +99,7 @@ enum E_FIELDS {
 	Float:fieldMaxY,
 	Float:fieldZ,
 	fieldColor,
+	fieldItem,
 	fieldAreaId,
 	fieldMapIcon
 };
@@ -171,10 +172,10 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 
 // Felder
 new const fields[][E_FIELDS] = {
-//  {id, name, minx, miny, max, maxy, höhe (z), farbe}
-	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE},
-	{1, "Banenen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW},
-	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, 14.5532, COLOR_BROWN}
+//  {id, name, minx, miny, max, maxy, höhe (z), farbe, farm item}
+	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE, 4},
+	{1, "Bananen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW, 5},
+	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, 14.5532, COLOR_BROWN, 3}
 };
 
 
@@ -247,7 +248,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid) {
 		SendClientMessage(playerid, fields[i][fieldColor], string);
 		
 		// Setzte Variable das Spieler in diesem Feld ist
-		pInfo[playerid][pArea] = areaid;
+		pInfo[playerid][pArea] = i;
 		
 		break;
 	}
@@ -798,7 +799,7 @@ function ShowPlayerStorage(playerid, storageid) {
 	}
 	// Überschrift mit Kapazitäts-Anzeige setzten
 	cache_get_value_name_float(0, "capacity", maxCapacity);
-	format(caption, sizeof(caption), D_WHITE"Storage (%0.1f/%0.1f)", currentCapacity, maxCapacity);
+	format(caption, sizeof(caption), D_WHITE"Storage (%0.1f / %0.1f kg)", currentCapacity, maxCapacity);
 	ShowPlayerDialog(playerid, D_SHOWSTORAGE, DIALOG_STYLE_TABLIST_HEADERS, caption, query, D_WHITE"Auswählen", D_WHITE"Schließen");
 	return true;
 }
@@ -825,7 +826,6 @@ CMD:v(playerid, params[]) {
 	return true;
 }
 
-
 /*
  *
  *	Dieser Callback wird aufgerufen, wenn der Zustand einer beliebigen unterstützten
@@ -851,12 +851,55 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	    // Wenn Spieler in keiner Abbau-Area ist gehe nicht weiter
 	    if(!IsPlayerInAnyDynamicArea(playerid)) return true;
 	    
+	    new areaId = pInfo[playerid][pArea];
+	    
 	    // Falls Spieler in für keine Area registiert ist gehe nicht weiter
-	    if(!IsValidDynamicArea(pInfo[playerid][pArea])) return true;
+	    if(!IsValidDynamicArea(fields[areaId][fieldAreaId])) return true;
 	    
-	    SendClientMessage(playerid, COLOR_WHITE, "=> DEBUG MESSAGE: Abgebaut");
-	    
+	    GivePlayerItem(playerid, fields[areaId][fieldItem], 1);
 	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion gibt den angegeben Spieler das angegebene Item
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  itemid		Die ID des Items
+ *	@param  amount		Die Anzahl der Items
+ *
+ */
+stock GivePlayerItem(playerid, itemid, amount) {
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "SELECT `storage_items`.`amount`, `items`.`name` FROM `storage_items` LEFT JOIN `items` ON `storage_items`.`item_id` = `items`.`id`\
+		WHERE `storage_items`.`storage_id` = '%d' AND `storage_items`.`item_id` = '%d'", pInfo[playerid][pStorage], itemid);
+	mysql_tquery(dbhandle, query, "OnPlayerGiveItemCheckExists", "ddd", playerid, itemid, amount);
+	return true;
+}
+
+function OnPlayerGiveItemCheckExists(playerid, itemid, amount) {
+	new query[256];
+	if(cache_num_rows()) {
+	    mysql_format(dbhandle, query, sizeof(query), "UPDATE `storage_items` SET `amount` = `storage_items`.`amount` + '%d' WHERE  `item_id` = '%d'", amount, itemid);
+ 	} else {
+ 	    mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `storage_items` (`item_id`, `storage_id`, `amount`) VALUES ('%d', '%d', '%d')", itemid, pInfo[playerid][pStorage], amount);
+ 	}
+ 	mysql_tquery(dbhandle, query);
+ 	
+ 	// Check Item Name
+ 	mysql_format(dbhandle, query, sizeof(query), "SELECT `name` FROM `items` WHERE `id` = '%d'", itemid);
+ 	mysql_tquery(dbhandle, query, "ShowPlayerGiveItemMessage", "dd", playerid, amount);
+	return true;
+}
+
+function ShowPlayerGiveItemMessage(playerid, amount) {
+ 	new name[71], query[128];
+	cache_get_value_name(0, "name", name, sizeof(name));
+
+	format(query, sizeof(query), "=> %d %s erhalten", amount, name);
+ 	SCM(playerid, COLOR_WHITE, query);
 	return true;
 }
 

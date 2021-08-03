@@ -229,7 +229,7 @@ stock CreateMiningFields() {
 
 /*
  *
- *	Diese Funktion zeigt die Abbaufelder fï¿½r den angegebenen Spieler
+ *	Diese Funktion zeigt die Abbaufelder für den angegebenen Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@params playerid    Die ID des Spielers
@@ -832,24 +832,24 @@ CMD:getstorage(playerid, params[]) {
 function ShowPlayerStorage(playerid, storageid) {
  	new rows = cache_num_rows();
 	if(!rows) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Keine Items im Storage");
-	new query[512], caption[128], Float:maxCapacity, Float:currentCapacity;
+	new query[512], caption[128], maxCapacity, currentCapacity;
 
 	// Dialog Header setzten
 	format(query, sizeof(query), D_WHITE"Item\t"D_WHITE"Gewicht\t"D_WHITE"Anzahl\n");
 	for(new i = 0; i < rows; i++) {
 	
 		// Dialog mit Werten füllen
-	    new amount, Float:weight, name[71];
+	    new amount, weight, name[71];
 	    cache_get_value_name_int(i, "amount", amount);
-	    cache_get_value_name_float(i, "weight", weight);
+	    cache_get_value_name_int(i, "weight", weight);
 	    cache_get_value_name(i, "name", name, sizeof(name));
-	    format(query, sizeof(query), "%s%s\t%0.1f\t%d\n", query, name, weight, amount);
+	    format(query, sizeof(query), "%s%s\t%d\t%d\n", query, name, weight, amount);
 
 	    currentCapacity += (weight * amount);
 	}
 	// Überschrift mit Kapazitäts-Anzeige setzten
-	cache_get_value_name_float(0, "capacity", maxCapacity);
-	format(caption, sizeof(caption), D_WHITE"Storage (%0.1f / %0.1f kg)", currentCapacity, maxCapacity);
+	cache_get_value_name_int(0, "capacity", maxCapacity);
+	format(caption, sizeof(caption), D_WHITE"Storage (%d / %d kg)", currentCapacity, maxCapacity);
 	ShowPlayerDialog(playerid, D_SHOWSTORAGE, DIALOG_STYLE_TABLIST_HEADERS, caption, query, D_WHITE"Auswählen", D_WHITE"Schließen");
 	return true;
 }
@@ -1210,13 +1210,36 @@ stock formatMoney(money) {
  */
 stock SetInventoryTextDrawValues(playerid) {
 	// Seztzt den Konto Wert
-	new string[128];
+	new string[300];
 	format(string, sizeof(string), "$%s", formatMoney(pInfo[playerid][pBank]));
     PlayerTextDrawSetString(playerid, inventoryTextBankMoney[playerid], string);
     
     // Setzt das Bargeld
     format(string, sizeof(string), "$%s", formatMoney(pInfo[playerid][pCash]));
 	PlayerTextDrawSetString(playerid, inventoryTextCashMoney[playerid], string);
+	
+	// Setzt das Gewicht
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `storages`.`capacity`, SUM(`items`.`weight` * `storage_items`.`amount`) AS 'weight' FROM `storages` LEFT JOIN `storage_items`\
+		ON `storages`.`id` = `storage_items`.`storage_id` LEFT JOIN `items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storages`.`id` = '%d'", pInfo[playerid][pStorage]);
+	mysql_tquery(dbhandle, string, "SetInventoryWeights", "d", playerid);
+	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt das Gewicht im Inventar-Textdraw
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+function SetInventoryWeights(playerid) {
+
+    new string[128], maxCapacity, capacity;
+	cache_get_value_name_int(0, "weight", capacity);
+	cache_get_value_name_int(0, "capacity", maxCapacity);
+	format(string, sizeof(string), "Weight: %d / %d kg", capacity, maxCapacity);
+    PlayerTextDrawSetString(playerid, inventoryTextWeight[playerid], string);
 	return true;
 }
 

@@ -555,8 +555,41 @@ function OnUserCreate(playerid) {
 	new string[144];
 	format(string, sizeof(string), "Spieler %s verbunden", GetName(playerid));
 	SendClientMessageToAll(COLOR_GREY, string);
+	
+	ShowMiningFields(playerid);
+	
+	CreatePlayerInventory(playerid);
 	return true;
 }
+
+/*
+ *
+ *  Diese Funktion erstellt ein Spieler-Inventar als Storage
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+stock CreatePlayerInventory(playerid) {
+	new query[128];
+	mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `storages` (`capacity`) VALUES ('10')");
+	mysql_tquery(dbhandle, query, "OnPlayerInventoryCreated", "d", playerid);
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Spieler-Inventar erstellt wird
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+function OnPlayerInventoryCreated(playerid) {
+	pInfo[playerid][pStorage] = cache_insert_id();
+	return true;
+}
+
 
 /*
  *

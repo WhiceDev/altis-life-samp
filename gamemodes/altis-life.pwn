@@ -836,18 +836,21 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
  */
 stock CreateDatabaseTables() {
 	CreateUserTable();
+	CreateItemTable();
+	CreateStoragesTable();
+	CreateStorageItemsTable();
 	
 	return true;
 }
 
 /*
  *
- *	Diese Funktion erstellt die 'users' Tablle in der Datebank, falls sie noch nicht existiert
+ *	Diese Funktion erstellt die 'users' Tabelle in der Datebank, falls sie noch nicht existiert
  *	Dieses Callback benutzt den Return-Wert nicht.
  *
  */
 stock CreateUserTable() {
-    new query[2300];
+    new query[2400];
     format(query, sizeof(query), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique user id',\
 		`name` VARCHAR(20) NOT NULL COMMENT 'user name (unique)' COLLATE 'utf8mb4_general_ci',\
@@ -887,6 +890,7 @@ stock CreateUserTable() {
 		`ammo11` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 11',\
 		`weapon12` INT(11) NOT NULL DEFAULT '0' COMMENT 'weapon slot 12',\
 		`ammo12` INT(11) NOT NULL DEFAULT '0' COMMENT 'ammo slot 12',\
+		`storage` INT(11) NOT NULL DEFAULT '0' COMMENT 'inventory storage id',\
 		PRIMARY KEY (`id`) USING BTREE", query);
 		
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `users` (%s)\
@@ -894,10 +898,86 @@ stock CreateUserTable() {
 	COLLATE='utf8mb4_general_ci'\
 	ENGINE=InnoDB;", query);
 	
-	//printf("query: %d", strlen(query)); // 2271
+	//printf("users table: %d", strlen(query)); // 2231
 	
 	mysql_tquery(dbhandle, query);
 	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'items' Tabelle in der Datebank, falls sie noch nicht existiert
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateItemTable() {
+    new query[400];
+    format(query, sizeof(query), "\
+		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique item id',\
+		`name` VARCHAR(70) NOT NULL COMMENT 'item name' COLLATE 'utf8mb4_general_ci',\
+		`weight` FLOAT NOT NULL DEFAULT '1' COMMENT 'item weight (format 0.0 kilograms)',\
+		PRIMARY KEY (`id`) USING BTREE");
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `items` (%s)\
+	COMMENT='all item informations'\
+	COLLATE='utf8mb4_general_ci'\
+	ENGINE=InnoDB;", query);
+	
+	//printf("item table: %d", strlen(query)); // 360
+	
+	mysql_tquery(dbhandle, query);
+
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'storages' Tabelle in der Datebank, falls sie noch nicht existiert
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateStoragesTable() {
+    new query[400];
+    format(query, sizeof(query), "\
+		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique item id',\
+		`capacity` FLOAT NOT NULL COMMENT 'storage capacity (format 0.0 kilograms)',\
+		PRIMARY KEY (`id`) USING BTREE");
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `storages` (%s)\
+	COMMENT='all item informations'\
+	COLLATE='utf8mb4_general_ci'\
+	ENGINE=InnoDB;", query);
+	
+	//printf("storages table: %d", strlen(query)); // 363
+
+	mysql_tquery(dbhandle, query);
+
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'storage_items' Tabelle in der Datebank, falls sie noch nicht existiert
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateStorageItemsTable() {
+    new query[600];
+    format(query, sizeof(query), "\
+		`item_id` INT(11) NOT NULL,\
+		`storage_id` INT(11) NOT NULL,\
+		INDEX `FK__items` (`item_id`) USING BTREE,\
+		INDEX `FK__storages` (`storage_id`) USING BTREE,\
+		CONSTRAINT `FK__items` FOREIGN KEY (`item_id`) REFERENCES `altis-life`.`items` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,\
+		CONSTRAINT `FK__storages` FOREIGN KEY (`storage_id`) REFERENCES `altis-life`.`storages` (`id`) ON UPDATE CASCADE ON DELETE CASCADE");
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `storage_items` (%s)\
+	COMMENT='all item informations'\
+	COLLATE='utf8mb4_general_ci'\
+	ENGINE=InnoDB;", query);
+
+    //printf("storages items table: %d", strlen(query)); // 517
+
+	mysql_tquery(dbhandle, query);
+
 	return true;
 }
 

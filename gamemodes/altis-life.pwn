@@ -229,6 +229,22 @@ stock CreateMiningFields() {
 
 /*
  *
+ *	Diese Funktion zeigt die Abbaufelder f�r den angegebenen Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params playerid    Die ID des Spielers
+ *
+ */
+stock ShowMiningFields(playerid) {
+	for(new i = 0; i < sizeof(fields); i++) {
+	    GangZoneShowForPlayer(playerid, fields[i][fieldId], fields[i][fieldColor]);
+	}
+	return true;
+}
+
+
+/*
+ *
  *  Dieses Callback wird aufgerufen, wenn ein Spieler eine dynamische Area betritt
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -616,6 +632,8 @@ function OnUserLogin(playerid) {
 	
 	SetPlayerSkin(playerid, pInfo[playerid][pSkin]);
 
+    ShowMiningFields(playerid);
+
 	ShowConnectMessage(playerid);
 	return true;
 }
@@ -768,7 +786,6 @@ CMD:getstorage(playerid, params[]) {
 	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "dd", playerid, storageID);
 	return true;
 }
-
 
 /*
  *

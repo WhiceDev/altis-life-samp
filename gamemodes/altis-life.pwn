@@ -44,7 +44,8 @@ new startTime;
 // Dialog Enum
 enum {
 	D_LOGIN = 1,
-	D_REGISTER
+	D_REGISTER,
+	D_SHOWSTORAGE
 }
 
 enum E_PLAYER {
@@ -187,6 +188,7 @@ main() {}
  *
  */
 public OnGameModeInit() {
+
 	// Starte das Benchmarking
 	startTime = GetTickCount();
     
@@ -745,21 +747,57 @@ CMD:inventory(playerid, params[]) {
 
 /*
  *
- *	Dieser Befehl zeigt den Inhalt eines Storage an
+ *	Dieser Befehl zeigt den Inhalt eines Storage an (Develop Befehl)
  *	Dieser Befehl benutzt den Return-Wert nicht.
  *
  *	@param	playerid	Die ID des Spielers
  *	@param  params 		Eingegebenen Parameter
  *
  */
+// TODO: Entfernen (Develop Befehl)
 CMD:getstorage(playerid, params[]) {
 	new storageID;
 	if(sscanf(params, "d", storageID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /getstorage [Storage-ID]");
-	new query[256];
+	new query[512];
 	mysql_format(dbhandle, query, sizeof(query), "SELECT `items`.`name`, `items`.`weight`, `storage_items`.`amount`, `storages`.`capacity` FROM\
 	`items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id`\
 	LEFT JOIN `storages` ON `storages`.`id` = `storage_items`.`storage_id` WHERE `storage_items`.`storage_id` = '%d'", storageID);
-	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "d", storageID);
+	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "dd", playerid, storageID);
+	return true;
+}
+
+
+/*
+ *
+ *	Diese Funktion zeigt das Storage-Inventar in einem Dialog an den Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  storageid   Die Storage-ID
+ *
+ */
+function ShowPlayerStorage(playerid, storageid) {
+ 	new rows = cache_num_rows();
+	if(!rows) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Keine Items im Storage");
+	new query[512], caption[128], Float:maxCapacity, Float:currentCapacity;
+
+	// Dialog Header setzten
+	format(query, sizeof(query), D_WHITE"Item\t"D_WHITE"Gewicht\t"D_WHITE"Anzahl\n");
+	for(new i = 0; i < rows; i++) {
+	
+		// Dialog mit Werten füllen
+	    new amount, Float:weight, name[71];
+	    cache_get_value_name_int(i, "amount", amount);
+	    cache_get_value_name_float(i, "weight", weight);
+	    cache_get_value_name(i, "name", name, sizeof(name));
+	    format(query, sizeof(query), "%s%s\t%0.1f\t%d\n", query, name, weight, amount);
+
+	    currentCapacity += (weight * amount);
+	}
+	// Überschrift mit Kapazitäts-Anzeige setzten
+	cache_get_value_name_float(0, "capacity", maxCapacity);
+	format(caption, sizeof(caption), D_WHITE"Storage (%0.1f/%0.1f)", currentCapacity, maxCapacity);
+	ShowPlayerDialog(playerid, D_SHOWSTORAGE, DIALOG_STYLE_TABLIST_HEADERS, caption, query, D_WHITE"Auswählen", D_WHITE"Schließen");
 	return true;
 }
 

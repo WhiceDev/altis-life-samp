@@ -271,7 +271,7 @@ stock SaveVehicle(vehID) {
 
 /*
  *
- *	Diese Funktion erstellt ein Fahrzeug fï¿½r einen Spieler
+ *	Diese Funktion erstellt ein Fahrzeug für einen Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@params playerid    Die ID des Spielers
@@ -282,7 +282,7 @@ stock CreatePlayerVehicle(playerid, modelid) {
 
 	new vehID = GetFreeVehicleEnumID();
 	
-	// Prï¿½fen ob maximale Anzahl an Fahrzeugen erreicht
+	// Prüfen ob maximale Anzahl an Fahrzeugen erreicht
 	if(vehID == -1) return true;
 	
 	vInfo[vehID][vModel] = modelid;
@@ -306,7 +306,7 @@ stock CreatePlayerVehicle(playerid, modelid) {
 
 /*
  *
- *	Diese Funktion weiï¿½t dem Emum die Datenbank-ID des Fahrzeuges zu
+ *	Diese Funktion weißt dem Emum die Datenbank-ID des Fahrzeuges zu
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@params vehID    Die ID des Fahrzeuges im Enum
@@ -319,7 +319,7 @@ function OnPlayerVehicleCreated(vehID) {
 
 /*
  *
- *	Diese Funktion gibt eine freie ID im Enum zurï¿½ck
+ *	Diese Funktion gibt eine freie ID im Enum zurück
  *
  *  @return		Freie ID im Enum oder -1, falls keine gefunden wird
  *
@@ -453,7 +453,7 @@ public OnPlayerSpawn(playerid) {
 	    // Zeige Login/Register Hintergrund
 	    SetPlayerCameraPos(10, 10 , 10, 10);
 	    SetPlayerCameraLookAt(0, 0, 0, 6);
-	    
+
 		// Überprüfe ob der Spieler in der Datenbank existiert
 		new query[256];
 		mysql_format(dbhandle, query, sizeof(query), "SELECT `salt`, `password` FROM `users` WHERE `name` = '%e' LIMIT 1", pInfo[playerid][pName]);
@@ -1036,7 +1036,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 /*
  *
  *	Diese Funktion gibt den angegeben Spieler das angegebene Item
- *	Dieser Befehl benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param	playerid	Die ID des Spielers
  *	@param  itemid		Die ID des Items
@@ -1054,7 +1054,7 @@ stock GivePlayerItem(playerid, itemid, amount) {
 
 /*
  *
- *	Diese Funktion ï¿½berprï¿½ft, ob der angegebene Spieler das angegebene Item bereits im Inventar hat
+ *	Diese Funktion überprüft, ob der angegebene Spieler das angegebene Item bereits im Inventar hat
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param	playerid	Die ID des Spielers
@@ -1264,7 +1264,8 @@ stock CreateItemTable() {
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique item id',\
 		`name` VARCHAR(70) NOT NULL COMMENT 'item name' COLLATE 'utf8mb4_general_ci',\
 		`weight` INT(11) NOT NULL DEFAULT '1' COMMENT 'item weight',\
-		PRIMARY KEY (`id`) USING BTREE");
+		PRIMARY KEY (`id`) USING BTREE,\
+		UNIQUE INDEX `name` (`name`) USING BTREE");
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `items` (%s)\
 	COMMENT='all item informations'\
 	COLLATE='utf8mb4_general_ci'\

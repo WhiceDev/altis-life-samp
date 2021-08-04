@@ -104,6 +104,17 @@ enum E_FIELDS {
 	fieldMapIcon
 };
 
+enum E_VEHICLE {
+	vVehicleID,
+	vDBID,
+	vModel,
+	vColor1,
+	vColor2,
+	vOwner,
+	vStorage
+};
+new vInfo[MAX_VEHICLES][E_VEHICLE];
+
 // Farben definieren
 #define COLOR_FAIL 0xFF0000FF
 #define COLOR_WHITE 0xFFFFFFFF
@@ -240,6 +251,84 @@ stock ShowMiningFields(playerid) {
 	    GangZoneShowForPlayer(playerid, fields[i][fieldId], fields[i][fieldColor]);
 	}
 	return true;
+}
+
+/*
+ *
+ *	Diese Funktion Speichert ein Fahrzeug in der Datenbank
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params vehID    Die ID des Fahrzeugs im Enum
+ *
+ */
+stock SaveVehicle(vehID) {
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "UPDATE `vehicles` SET `model` = '%d', `color1` = '%d', `color2` = '%d' WHERE `id` = '%d'",
+		vInfo[vehID][vModel], vInfo[vehID][vColor1], vInfo[vehID][vColor2], vInfo[vehID][vDBID]);
+	mysql_tquery(dbhandle, query);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt ein Fahrzeug f�r einen Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params playerid    Die ID des Spielers
+ *  @params modelid		Die ID des Fahrzeugmodells
+ *
+ */
+stock CreatePlayerVehicle(playerid, modelid) {
+
+	new vehID = GetFreeVehicleEnumID();
+	
+	// Pr�fen ob maximale Anzahl an Fahrzeugen erreicht
+	if(vehID == -1) return true;
+	
+	vInfo[vehID][vModel] = modelid;
+	vInfo[vehID][vColor1] = 1;
+	vInfo[vehID][vColor2] = 1;
+	vInfo[vehID][vOwner] = pInfo[playerid][pDBID];
+	
+	new Float:playerPos[4];
+	GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
+	GetPlayerFacingAngle(playerid, playerPos[3]);
+	
+	vInfo[vehID][vVehicleID] = CreateVehicle(vInfo[vehID][vModel], playerPos[0], playerPos[1] + 5, playerPos[2], playerPos[3], vInfo[vehID][vColor1], vInfo[vehID][vColor2], -1, 0);
+	
+	PutPlayerInVehicle(playerid, vInfo[vehID][vVehicleID], 0);
+	
+	// Fahrzeug-Storage erstellen
+	CreateVehicleInventory(vehID);
+	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion wei�t dem Emum die Datenbank-ID des Fahrzeuges zu
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params vehID    Die ID des Fahrzeuges im Enum
+ *
+ */
+function OnPlayerVehicleCreated(vehID) {
+	vInfo[vehID][vDBID] = cache_insert_id();
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion gibt eine freie ID im Enum zur�ck
+ *
+ *  @return		Freie ID im Enum oder -1, falls keine gefunden wird
+ *
+ */
+stock GetFreeVehicleEnumID() {
+	for(new i = 0; i < sizeof(vInfo); i++) {
+	    if(vInfo[i][vModel] < 400 || vInfo[i][vModel] > 611) return i;
+	}
+	return -1;
 }
 
 
@@ -576,6 +665,21 @@ stock CreatePlayerInventory(playerid) {
 
 /*
  *
+ *  Diese Funktion erstellt ein Fahrzeug-Inventar als Storage
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @param  vehID    Die ID des Fahrzeuges im Enum
+ *
+ */
+stock CreateVehicleInventory(vehID) {
+	new query[128];
+	mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `storages` (`capacity`) VALUES ('50')");
+	mysql_tquery(dbhandle, query, "OnVehicleInventoryCreated", "d", vehID);
+	return true;
+}
+
+/*
+ *
  *  Dieses Callback wird aufgerufen, wenn ein Spieler-Inventar erstellt wird
  *	Dieses Callback benutzt den Return-Wert nicht.
  *
@@ -589,6 +693,25 @@ function OnPlayerInventoryCreated(playerid) {
 	mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `users` (`password`, `salt`, `name`, `storage`) VALUES ('%e', '%e', '%e', '%d')",
 		pInfo[playerid][pPassword], pInfo[playerid][pSalt], pInfo[playerid][pName], pInfo[playerid][pStorage]);
     mysql_tquery(dbhandle, query, "OnUserCreate", "d", playerid);
+
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback wird aufgerufen, wenn ein Fahrzeug-Inventar erstellt wird
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  vehID    Die ID des Fahrzeuges im Enum
+ *
+ */
+function OnVehicleInventoryCreated(vehID) {
+	vInfo[vehID][vStorage] = cache_insert_id();
+
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `vehicles` (`model`, `owner`, `color1`, `color2`, `storage`) VALUES ('%d', '%d', '%d', '%d', '%d')",
+		vInfo[vehID][vModel], vInfo[vehID][vOwner], vInfo[vehID][vColor1], vInfo[vehID][vColor2], vInfo[vehID][vStorage]);
+	mysql_tquery(dbhandle, query);
 
 	return true;
 }
@@ -868,14 +991,10 @@ function ShowPlayerStorage(playerid, storageid) {
  */
  // TODO: Entfernen (Develop Befehl)
 CMD:v(playerid, params[]) {
-	new vID;
-	if(sscanf(params, "d", vID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /v [Vehicle-ID]");
-	if(vID < 400 || vID > 611) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" VehicleID muss zwischen 400-611 liegen");
-	new Float:Pos[4];
-	GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-	GetPlayerFacingAngle(playerid, Pos[3]);
-	new const vehicle = CreateVehicle(vID, Pos[0], Pos[1], Pos[2], Pos[3], 211, 211, -1, 1);
-	PutPlayerInVehicle(playerid, vehicle, -1);
+	new modelID;
+	if(sscanf(params, "d", modelID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /v [Model-ID]");
+	if(modelID < 400 || modelID > 611) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Model-ID muss zwischen 400-611 liegen");
+	CreatePlayerVehicle(playerid, modelID);
 	return true;
 }
 
@@ -1026,21 +1145,23 @@ stock CreateDatabaseTables() {
 /*
  *
  *	Diese Funktion erstellt die 'vehicles' Tabelle in der Datebank, falls sie noch nicht existiert
- *	Dieses Callback benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
 stock CreateVehicleTable() {
-    new query[500];
+    new query[800];
     format(query, sizeof(query), "\
-		`id` INT(11) NOT NULL COMMENT 'unique vehicle id',\
+		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique vehicle id',\
 		`model` INT(11) NOT NULL COMMENT 'vehicle model',\
 		`owner` INT(11) NOT NULL COMMENT 'player id from table players',\
 		`color1` INT(11) NOT NULL DEFAULT '1' COMMENT 'primary vehicle color',\
-		`color2` INT(11) NOT NULL DEFAULT '1' COMMENT 'secondary vehicle color',");
+		`color2` INT(11) NOT NULL DEFAULT '1' COMMENT 'secondary vehicle color',\
+		`storage` INT(11) NOT NULL COMMENT 'vehicle storage',");
 	format(query, sizeof(query), "\
 		%sPRIMARY KEY (`id`) USING BTREE,\
 		INDEX `FK_vehicles_users` (`owner`) USING BTREE,\
-		CONSTRAINT `FK_vehicles_users` FOREIGN KEY (`owner`) REFERENCES `altis-life`.`users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE", query);
+		CONSTRAINT `FK_vehicles_storages` FOREIGN KEY (`storage`) REFERENCES `storages` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,\
+		CONSTRAINT `FK_vehicles_users` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE", query);
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `vehicles` (%s)\
 	COMMENT='player vehicles'\
 	COLLATE='utf8mb4_general_ci'\

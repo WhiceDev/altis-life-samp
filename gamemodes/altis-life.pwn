@@ -1060,11 +1060,11 @@ stock CreateVehicleTable() {
  */
 stock CreateDefaultItems() {
 	new query[128];
-	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Pfirsich', 1)");
+	format(query, sizeof(query), "INSERT IGNORE INTO `items` (`name`, `weight`) VALUES ('Pfirsich', 1)");
 	mysql_tquery(dbhandle, query);
-	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Banane', 1)");
+	format(query, sizeof(query), "INSERT IGNORE INTO `items` (`name`, `weight`) VALUES ('Banane', 1)");
 	mysql_tquery(dbhandle, query);
-	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Eisenerz', '5')");
+	format(query, sizeof(query), "INSERT IGNORE INTO `items` (`name`, `weight`) VALUES ('Eisenerz', '5')");
 	mysql_tquery(dbhandle, query);
 	return true;
 }

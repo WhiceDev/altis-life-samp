@@ -1069,7 +1069,7 @@ stock CreateItemTable() {
     format(query, sizeof(query), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique item id',\
 		`name` VARCHAR(70) NOT NULL COMMENT 'item name' COLLATE 'utf8mb4_general_ci',\
-		`weight` FLOAT NOT NULL DEFAULT '1' COMMENT 'item weight (format 0.0 kilograms)',\
+		`weight` INT(11) NOT NULL DEFAULT '1' COMMENT 'item weight',\
 		PRIMARY KEY (`id`) USING BTREE");
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `items` (%s)\
 	COMMENT='all item informations'\
@@ -1093,7 +1093,7 @@ stock CreateStoragesTable() {
     new query[400];
     format(query, sizeof(query), "\
 		`id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique item id',\
-		`capacity` FLOAT NOT NULL COMMENT 'storage capacity (format 0.0 kilograms)',\
+		`capacity` INT(11) NOT NULL COMMENT 'storage capacity',\
 		PRIMARY KEY (`id`) USING BTREE");
 	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `storages` (%s)\
 	COMMENT='all item informations'\
@@ -1118,6 +1118,7 @@ stock CreateStorageItemsTable() {
     format(query, sizeof(query), "\
 		`item_id` INT(11) NOT NULL,\
 		`storage_id` INT(11) NOT NULL,\
+		`amount` INT(11) NOT NULL DEFAULT '1',\
 		INDEX `FK__items` (`item_id`) USING BTREE,\
 		INDEX `FK__storages` (`storage_id`) USING BTREE,\
 		CONSTRAINT `FK__items` FOREIGN KEY (`item_id`) REFERENCES `altis-life`.`items` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,\

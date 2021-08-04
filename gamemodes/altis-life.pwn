@@ -995,10 +995,39 @@ stock CreateDatabaseTables() {
 	CreateItemTable();
 	CreateStoragesTable();
 	CreateStorageItemsTable();
+	CreateVehicleTable();
 
 	CreateDefaultItems();
 	
 	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'vehicles' Tabelle in der Datebank, falls sie noch nicht existiert
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateVehicleTable() {
+    new query[500];
+    format(query, sizeof(query), "\
+		`id` INT(11) NOT NULL COMMENT 'unique vehicle id',\
+		`model` INT(11) NOT NULL COMMENT 'vehicle model',\
+		`owner` INT(11) NOT NULL COMMENT 'player id from table players',\
+		`color1` INT(11) NOT NULL DEFAULT '1' COMMENT 'primary vehicle color',\
+		`color2` INT(11) NOT NULL DEFAULT '1' COMMENT 'secondary vehicle color',");
+	format(query, sizeof(query), "\
+		%sPRIMARY KEY (`id`) USING BTREE,\
+		INDEX `FK_vehicles_users` (`owner`) USING BTREE,\
+		CONSTRAINT `FK_vehicles_users` FOREIGN KEY (`owner`) REFERENCES `altis-life`.`users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE", query);
+	mysql_format(dbhandle, query, sizeof(query), "CREATE TABLE IF NOT EXISTS `vehicles` (%s)\
+	COMMENT='player vehicles'\
+	COLLATE='utf8mb4_general_ci'\
+	ENGINE=InnoDB;", query);
+
+	//printf("vehicles table: %d", strlen(query)); // 
+
+	mysql_tquery(dbhandle, query);
 }
 
 
@@ -1008,7 +1037,7 @@ stock CreateDatabaseTables() {
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
-CreateDefaultItems() {
+stock CreateDefaultItems() {
 	new query[128];
 	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Pfirsich', 1)");
 	mysql_tquery(dbhandle, query);

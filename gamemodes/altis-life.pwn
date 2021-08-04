@@ -462,7 +462,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				// Passwort ist nach Vorgaben
 				new password[250];
 				format(password, sizeof(password), "%s%s", inputtext, pInfo[playerid][pSalt]);
-				bcrypt_check(password, pInfo[playerid][pPassword], "OnPasswordChecked", "d", playerid);
+    			bcrypt_check(password, pInfo[playerid][pPassword], "OnPasswordChecked", "d", playerid);
 			}
 	    }
 	    case D_REGISTER: {
@@ -529,11 +529,10 @@ function OnPasswordChecked(playerid) {
  *
  */
 function OnPasswordHashed(playerid) {
-    new hash[BCRYPT_HASH_LENGTH], query[256];
+    new hash[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(hash);
-    mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `users` (`password`, `salt`, `name`) VALUES ('%e', '%e', '%e')",
-		hash, pInfo[playerid][pSalt], pInfo[playerid][pName]);
-    mysql_tquery(dbhandle, query, "OnUserCreate", "d", playerid);
+    format(pInfo[playerid][pPassword], sizeof(hash), hash);
+    CreatePlayerInventory(playerid);
 	return true;
 }
 
@@ -557,8 +556,6 @@ function OnUserCreate(playerid) {
 	SendClientMessageToAll(COLOR_GREY, string);
 	
 	ShowMiningFields(playerid);
-	
-	CreatePlayerInventory(playerid);
 	return true;
 }
 
@@ -587,6 +584,12 @@ stock CreatePlayerInventory(playerid) {
  */
 function OnPlayerInventoryCreated(playerid) {
 	pInfo[playerid][pStorage] = cache_insert_id();
+	
+	new query[256];
+	mysql_format(dbhandle, query, sizeof(query), "INSERT INTO `users` (`password`, `salt`, `name`, `storage`) VALUES ('%e', '%e', '%e', '%d')",
+		pInfo[playerid][pPassword], pInfo[playerid][pSalt], pInfo[playerid][pName], pInfo[playerid][pStorage]);
+    mysql_tquery(dbhandle, query, "OnUserCreate", "d", playerid);
+
 	return true;
 }
 

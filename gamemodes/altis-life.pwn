@@ -932,6 +932,17 @@ stock GivePlayerItem(playerid, itemid, amount) {
 	return true;
 }
 
+
+/*
+ *
+ *	Diese Funktion �berpr�ft, ob der angegebene Spieler das angegebene Item bereits im Inventar hat
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  itemid		Die ID des Items
+ *	@param  amount		Die Anzahl der Items
+ *
+ */
 function OnPlayerGiveItemCheckExists(playerid, itemid, amount) {
 	new query[256];
 	if(cache_num_rows()) {
@@ -947,6 +958,16 @@ function OnPlayerGiveItemCheckExists(playerid, itemid, amount) {
 	return true;
 }
 
+
+/*
+ *
+ *	Diese Funktion sendet dem Spieler eine Nachricht, welches Item und wie viel er davon bekommen hat
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  amount		Die Anzahl der Items
+ *
+ */
 function ShowPlayerGiveItemMessage(playerid, amount) {
  	new name[71], query[128];
 	cache_get_value_name(0, "name", name, sizeof(name));

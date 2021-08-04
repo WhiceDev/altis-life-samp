@@ -173,8 +173,8 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 // Felder
 new const fields[][E_FIELDS] = {
 //  {id, name, minx, miny, max, maxy, höhe (z), farbe, farm item}
-	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE, 4},
-	{1, "Bananen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW, 5},
+	{0, "Pfirsich-Feld", 1465.4302, -1713.8336, 1454.9945, -1682.3903, 14.5469, COLOR_ORANGE, 1},
+	{1, "Bananen-Feld", 1491.4678, -1682.0530, 1502.1647, -1713.7992, 14.5469, COLOR_YELLOW, 2},
 	{2, "Eisenmiene", 1489.8296, -1669.9438, 1469.0613, -1661.8733, 14.5532, COLOR_BROWN, 3}
 };
 
@@ -987,7 +987,7 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 /*
  *
  *	Diese Funktion ruft die einzelnen Funktionen zur Datenbanktabllenerstellung auf
- *	Dieses Callback benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
 stock CreateDatabaseTables() {
@@ -995,14 +995,34 @@ stock CreateDatabaseTables() {
 	CreateItemTable();
 	CreateStoragesTable();
 	CreateStorageItemsTable();
+
+	CreateDefaultItems();
 	
+	return true;
+}
+
+
+/*
+ *
+ *	Diese Funktion erstellt die 'users' Tabelle in der Datebank, falls sie noch nicht existiert
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ */
+CreateDefaultItems() {
+	new query[128];
+	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Pfirsich', 1)");
+	mysql_tquery(dbhandle, query);
+	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Banane', 1)");
+	mysql_tquery(dbhandle, query);
+	format(query, sizeof(query), "INSERT INTO `items` (`name`, `weight`) VALUES ('Eisenerz', '5')");
+	mysql_tquery(dbhandle, query);
 	return true;
 }
 
 /*
  *
  *	Diese Funktion erstellt die 'users' Tabelle in der Datebank, falls sie noch nicht existiert
- *	Dieses Callback benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
 stock CreateUserTable() {

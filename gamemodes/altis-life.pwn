@@ -360,7 +360,6 @@ public OnPlayerEnterDynamicArea(playerid, areaid) {
 	return true;
 }
 
-
 /*
  *
  *	Dieses Callback wird aufgerufen, wenn der Gamemode beendet wird.
@@ -408,7 +407,6 @@ public OnPlayerConnect(playerid) {
 	LoadInventoryTextDraws(playerid);
 	return true;
 }
-
 
 /*
  *
@@ -925,6 +923,14 @@ CMD:inventory(playerid, params[]) {
 	return true;
 }
 
+CMD:debug(playerid, params[]) {
+	new vehID;
+	if(sscanf(params, "d", vehID)) return true;
+    new test = GetPlayerPositionNextToACar(playerid, vehID);
+    printf("Position: %d", test);
+	return true;
+}
+
 /*
  *
  *	Dieser Befehl zeigt den Inhalt eines Storage an (Develop Befehl)
@@ -996,6 +1002,33 @@ CMD:v(playerid, params[]) {
 	if(modelID < 400 || modelID > 611) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Model-ID muss zwischen 400-611 liegen");
 	CreatePlayerVehicle(playerid, modelID);
 	return true;
+}
+
+/*
+ *
+ *	Diese Funktion gibt die Spielerposition zurück,
+ *	wo sich der Spieler vom Fahrzeug aus befindet
+ *  Geschrieben von https://breadfish.de/wcf/user/11258-iprototypei/
+ *  Funktionsweise leicht abgeändert - Whice
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  carid		Die VehicleID des Fahrzeuges
+ *  @return 1 - Rechts, 2 - Links, 3 - Vorne, 4 - Dahinter
+ *
+ */
+stock GetPlayerPositionNextToACar(playerid, vehicleid){
+	new Float:Pos[7];
+	GetVehiclePos(vehicleid, Pos[0], Pos[1], Pos[2]);
+	GetVehicleZAngle(vehicleid, Pos[3]);
+	GetPlayerPos(playerid, Pos[4], Pos[5], Pos[6]);
+	Pos[6] = ((Pos[4] - Pos[0]) * floatcos(Pos[3], degrees) + (Pos[5] - Pos[1]) * floatsin(Pos[3], degrees));
+	Pos[3] = ((-(Pos[4] - Pos[0])) * floatsin(Pos[3], degrees)+(Pos[5] - Pos[1]) * floatcos(Pos[3], degrees));
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, Pos[0], Pos[1], Pos[2]);
+	if(Pos[6] >= 0 && Pos[3] <= (Pos[1]/2) && Pos[3] >= (-Pos[1]/2)) return 1; 	// Rechts
+	else if(Pos[6] <= 0 && Pos[3] <= Pos[1]/2 && Pos[3] >= -Pos[1]/2) return 2; // Links
+	else if(Pos[3] >= 0 && Pos[6] <= Pos[0]/2 && Pos[6] >= -Pos[0]/2) return 3; // Vorne
+	else if(Pos[3] <= 0 && Pos[6] <= Pos[0]/2 && Pos[6] >= -Pos[0]/2) return 4; // Dahinter
+	return 0;
 }
 
 /*

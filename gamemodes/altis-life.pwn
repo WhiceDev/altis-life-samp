@@ -1016,11 +1016,12 @@ CMD:v(playerid, params[]) {
  *  @return 1 - Rechts, 2 - Links, 3 - Vorne, 4 - Dahinter
  *
  */
-stock GetPlayerPositionNextToACar(playerid, vehicleid){
+stock GetPlayerPositionNextToACar(playerid, vehicleid) {
 	new Float:Pos[7];
 	GetVehiclePos(vehicleid, Pos[0], Pos[1], Pos[2]);
 	GetVehicleZAngle(vehicleid, Pos[3]);
 	GetPlayerPos(playerid, Pos[4], Pos[5], Pos[6]);
+	if(!IsPlayerInRangeOfPoint(playerid, 5, Pos[0], Pos[1], Pos[2])) return 0;
 	Pos[6] = ((Pos[4] - Pos[0]) * floatcos(Pos[3], degrees) + (Pos[5] - Pos[1]) * floatsin(Pos[3], degrees));
 	Pos[3] = ((-(Pos[4] - Pos[0])) * floatsin(Pos[3], degrees)+(Pos[5] - Pos[1]) * floatcos(Pos[3], degrees));
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, Pos[0], Pos[1], Pos[2]);

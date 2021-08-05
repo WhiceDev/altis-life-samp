@@ -38,6 +38,10 @@ new startTime;
 #define UnSpectate(%0) TogglePlayerSpectating(%0, 0)
 #define PRESSED(%0) (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
+#if !defined IsValidVehicle
+    native IsValidVehicle(vehicleid);
+#endif
+
 // BCrypt Kosten
 #define BCRYPT_COST 14
 
@@ -111,7 +115,8 @@ enum E_VEHICLE {
 	vColor1,
 	vColor2,
 	vOwner,
-	vStorage
+	vStorage,
+	bool:vBoot
 };
 new vInfo[MAX_VEHICLES][E_VEHICLE];
 
@@ -289,12 +294,15 @@ stock CreatePlayerVehicle(playerid, modelid) {
 	vInfo[vehID][vColor1] = 1;
 	vInfo[vehID][vColor2] = 1;
 	vInfo[vehID][vOwner] = pInfo[playerid][pDBID];
+	vInfo[vehID][vBoot] = false;
 	
 	new Float:playerPos[4];
 	GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
 	GetPlayerFacingAngle(playerid, playerPos[3]);
 	
 	vInfo[vehID][vVehicleID] = CreateVehicle(vInfo[vehID][vModel], playerPos[0], playerPos[1] + 5, playerPos[2], playerPos[3], vInfo[vehID][vColor1], vInfo[vehID][vColor2], -1, 0);
+	
+	SetVehicleParamsEx(vInfo[vehID][vVehicleID], VEHICLE_PARAMS_ON, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
 	
 	PutPlayerInVehicle(playerid, vInfo[vehID][vVehicleID], 0);
 	
@@ -923,12 +931,75 @@ CMD:inventory(playerid, params[]) {
 	return true;
 }
 
-CMD:debug(playerid, params[]) {
-	new vehID;
-	if(sscanf(params, "d", vehID)) return true;
-    new test = GetPlayerPositionNextToACar(playerid, vehID);
-    printf("Position: %d", test);
-	return true;
+/*
+ *
+ *	Dieser Befehl öffnet/schließt den Kofferraum des eigenen Fahrzeuges
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+CMD:kofferraum(playerid, params[]) {
+	#pragma unused params
+	if(IsPlayerInAnyVehicle(playerid)) return SCM(playerid, COLOR_WHITE, "[Fehler] In einem Fahrzeug geht das nicht");
+	new vehID = GetNearestVehicleFromPlayer(playerid);
+	new vehicleIndex = GetVehicleEnumID(vehID);
+    if(vehicleIndex == -1) return SCM(playerid, COLOR_WHITE, "[Fehler] Melde dich im Support");
+    if(GetPlayerPositionNextToACar(playerid, vehID) != 4) return true;
+
+    new string[100], status[50], engine, lights, alarm, doors, bonnet, boot, objective;
+	GetVehicleParamsEx(vehID, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehID, engine, lights, alarm, doors, bonnet, !boot, objective);
+    vInfo[vehicleIndex][vBoot] = !vInfo[vehicleIndex][vBoot];
+
+    if(vInfo[vehicleIndex][vBoot]) status = "~g~geoeffnet";
+	else status = "~r~geschlossen";
+
+    format(string, sizeof(string), "~w~Kofferraum %s", status);
+    GameTextForPlayer(playerid, string, 2000, 3);
+    
+    OpenStorage(playerid, vInfo[vehicleIndex][vStorage]);
+	return 1;
+}
+
+/*
+ *
+ *	Diese Funktion gibt die Vehicle-ID des nähsten Fahrzeuges zurück
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@return	Vehicle-ID des Fahrzeuges
+ *
+ */
+stock GetNearestVehicleFromPlayer(playerid) {
+	new Float:dist = 9999999, Float:pos[3], Float:newDist, vehicleID = INVALID_VEHICLE_ID;
+	for(new i = 0; i < MAX_VEHICLES; i++) {
+		if(!IsValidVehicle(i)) continue;
+		GetVehiclePos(i, pos[0], pos[1], pos[2]);
+		newDist = GetPlayerDistanceFromPoint(playerid, pos[0], pos[1], pos[2]);
+		if(newDist < dist) {
+			dist = newDist;
+			vehicleID = i;
+		}
+	}
+	return vehicleID;
+}
+
+/*
+ *
+ *	Diese Funktion gibt die Enum-ID des Fahrzeuges zurück
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	vehicleid	Die Vehicle-ID des Fahrzeuges
+ *	@return	Enum-ID des Fahrzeuges
+ *
+ */
+stock GetVehicleEnumID(vehicleid) {
+	for(new i = 0; i < sizeof(vInfo); i++) {
+	    if(vInfo[i][vVehicleID] == vehicleid) return i;
+	}
+	return -1;
 }
 
 /*

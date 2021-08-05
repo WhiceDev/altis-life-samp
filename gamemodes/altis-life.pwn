@@ -944,11 +944,25 @@ CMD:debug(playerid, params[]) {
 CMD:getstorage(playerid, params[]) {
 	new storageID;
 	if(sscanf(params, "d", storageID)) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Benutzung: /getstorage [Storage-ID]");
-	new query[512];
+	OpenStorage(playerid, storageID);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion fragt ab, welche Items der Spieler im Inventar hat
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  storageid   Die Storage-ID
+ *
+ */
+stock OpenStorage(playerid, storageid) {
+    new query[512];
 	mysql_format(dbhandle, query, sizeof(query), "SELECT `items`.`name`, `items`.`weight`, `storage_items`.`amount`, `storages`.`capacity` FROM\
 	`items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id`\
-	LEFT JOIN `storages` ON `storages`.`id` = `storage_items`.`storage_id` WHERE `storage_items`.`storage_id` = '%d'", storageID);
-	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "dd", playerid, storageID);
+	LEFT JOIN `storages` ON `storages`.`id` = `storage_items`.`storage_id` WHERE `storage_items`.`storage_id` = '%d'", storageid);
+	mysql_tquery(dbhandle, query, "ShowPlayerStorage", "dd", playerid, storageid);
 	return true;
 }
 
@@ -963,7 +977,7 @@ CMD:getstorage(playerid, params[]) {
  */
 function ShowPlayerStorage(playerid, storageid) {
  	new rows = cache_num_rows();
-	if(!rows) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Keine Items im Storage");
+	//if(!rows) return SCM(playerid, COLOR_RED, "[FEHLER]"D_WHITE" Keine Items im Storage");
 	new query[512], caption[128], maxCapacity, currentCapacity;
 
 	// Dialog Header setzten

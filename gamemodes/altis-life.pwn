@@ -171,6 +171,46 @@ new PlayerText:inventoryBackgroundBox[MAX_PLAYERS],
 	PlayerText:inventoryButtonItemUse[MAX_PLAYERS],
 	PlayerText:inventoryButtonItemGive[MAX_PLAYERS];
 
+// Kofferraum Text-Draw Definitionen
+new PlayerText:trunkBoxBackground[MAX_PLAYERS],
+	PlayerText:trunkBoxHeader[MAX_PLAYERS],
+	PlayerText:trunkBtnClose[MAX_PLAYERS],
+	PlayerText:trunkTxtWeight[MAX_PLAYERS],
+	PlayerText:trunkBoxHeaderTrunk[MAX_PLAYERS],
+	PlayerText:trunkBoxTrunkBackground[MAX_PLAYERS],
+	PlayerText:trunkEditTxtTrunkAmount[MAX_PLAYERS],
+	PlayerText:trunkBtnTake[MAX_PLAYERS],
+	PlayerText:trunkBoxHeaderInv[MAX_PLAYERS],
+	PlayerText:trunkBoxInvBackground[MAX_PLAYERS],
+	PlayerText:trunkEditTxtInvAmount[MAX_PLAYERS],
+	PlayerText:trunkBoxStore[MAX_PLAYERS],
+	PlayerText:trunkTextItem1[MAX_PLAYERS],
+	PlayerText:trunkTextItem2[MAX_PLAYERS],
+	PlayerText:trunkTextItem3[MAX_PLAYERS],
+	PlayerText:trunkTextItem4[MAX_PLAYERS],
+	PlayerText:trunkTextItem5[MAX_PLAYERS],
+	PlayerText:trunkTextItem6[MAX_PLAYERS],
+	PlayerText:trunkTextItem7[MAX_PLAYERS],
+	PlayerText:trunkTextItem8[MAX_PLAYERS],
+	PlayerText:trunkTextItem9[MAX_PLAYERS],
+	PlayerText:trunkTextItem10[MAX_PLAYERS],
+	PlayerText:trunkTextItem11[MAX_PLAYERS],
+	PlayerText:trunkTextItem12[MAX_PLAYERS],
+	PlayerText:trunkTextItem13[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem1[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem2[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem3[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem4[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem5[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem6[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem7[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem8[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem9[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem10[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem11[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem12[MAX_PLAYERS],
+	PlayerText:trunkTextInvItem13[MAX_PLAYERS];
+
 /*
  *
  * TEXTDRAW INFOS
@@ -1635,6 +1675,548 @@ stock HideInventoryTextDraws(playerid) {
 	PlayerTextDrawHide(playerid, inventoryButtonItemGive[playerid]);
 	CancelSelectTextDraw(playerid);
 	pInfo[playerid][pInventoryOpend] = false;
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion l�dt die Trunk Text-Draws f�r den angegeben Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock LoadTrunkTextDraws(playerid) {
+	trunkBoxBackground[playerid] = CreatePlayerTextDraw(playerid, 324.000000, 110.000000, "_");
+	PlayerTextDrawFont(playerid, trunkBoxBackground[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxBackground[playerid], 0.725000, 27.500003);
+	PlayerTextDrawTextSize(playerid, trunkBoxBackground[playerid], 300.500000, 343.500000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxBackground[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, trunkBoxBackground[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBoxBackground[playerid], 2);
+	PlayerTextDrawColor(playerid, trunkBoxBackground[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxBackground[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBoxBackground[playerid], 135);
+	PlayerTextDrawUseBox(playerid, trunkBoxBackground[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxBackground[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxBackground[playerid], 0);
+
+	trunkBoxHeader[playerid] = CreatePlayerTextDraw(playerid, 152.000000, 92.000000, "Kofferraum - Infernus");
+	PlayerTextDrawFont(playerid, trunkBoxHeader[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxHeader[playerid], 0.224996, 1.499999);
+	PlayerTextDrawTextSize(playerid, trunkBoxHeader[playerid], 495.500000, 199.000000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxHeader[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBoxHeader[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkBoxHeader[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBoxHeader[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxHeader[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBoxHeader[playerid], -8388408);
+	PlayerTextDrawUseBox(playerid, trunkBoxHeader[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxHeader[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxHeader[playerid], 0);
+
+	trunkBtnClose[playerid] = CreatePlayerTextDraw(playerid, 152.000000, 362.000000, "Schliessen");
+	PlayerTextDrawFont(playerid, trunkBtnClose[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, trunkBtnClose[playerid], 0.229166, 1.600000);
+	PlayerTextDrawTextSize(playerid, trunkBtnClose[playerid], 218.500000, 13.500000);
+	PlayerTextDrawSetOutline(playerid, trunkBtnClose[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBtnClose[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBtnClose[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBtnClose[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBtnClose[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBtnClose[playerid], 135);
+	PlayerTextDrawUseBox(playerid, trunkBtnClose[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBtnClose[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBtnClose[playerid], 1);
+
+	trunkTxtWeight[playerid] = CreatePlayerTextDraw(playerid, 493.000000, 92.000000, "Weight: 198 / 200 kg");
+	PlayerTextDrawFont(playerid, trunkTxtWeight[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTxtWeight[playerid], 0.233333, 1.500000);
+	PlayerTextDrawTextSize(playerid, trunkTxtWeight[playerid], 400.000000, 17.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTxtWeight[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTxtWeight[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTxtWeight[playerid], 3);
+	PlayerTextDrawColor(playerid, trunkTxtWeight[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTxtWeight[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTxtWeight[playerid], 50);
+	PlayerTextDrawUseBox(playerid, trunkTxtWeight[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, trunkTxtWeight[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTxtWeight[playerid], 0);
+
+	trunkBoxHeaderTrunk[playerid] = CreatePlayerTextDraw(playerid, 155.000000, 114.000000, "Kofferraum");
+	PlayerTextDrawFont(playerid, trunkBoxHeaderTrunk[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxHeaderTrunk[playerid], 0.224996, 1.499999);
+	PlayerTextDrawTextSize(playerid, trunkBoxHeaderTrunk[playerid], 287.000000, 199.000000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxHeaderTrunk[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBoxHeaderTrunk[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkBoxHeaderTrunk[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBoxHeaderTrunk[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxHeaderTrunk[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBoxHeaderTrunk[playerid], -8388408);
+	PlayerTextDrawUseBox(playerid, trunkBoxHeaderTrunk[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxHeaderTrunk[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxHeaderTrunk[playerid], 0);
+
+	trunkBoxTrunkBackground[playerid] = CreatePlayerTextDraw(playerid, 221.000000, 130.000000, "_");
+	PlayerTextDrawFont(playerid, trunkBoxTrunkBackground[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxTrunkBackground[playerid], 0.633333, 20.200025);
+	PlayerTextDrawTextSize(playerid, trunkBoxTrunkBackground[playerid], 299.500000, 131.500000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxTrunkBackground[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, trunkBoxTrunkBackground[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBoxTrunkBackground[playerid], 2);
+	PlayerTextDrawColor(playerid, trunkBoxTrunkBackground[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxTrunkBackground[playerid], -741092353);
+	PlayerTextDrawBoxColor(playerid, trunkBoxTrunkBackground[playerid], 1296911686);
+	PlayerTextDrawUseBox(playerid, trunkBoxTrunkBackground[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxTrunkBackground[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxTrunkBackground[playerid], 0);
+
+	trunkEditTxtTrunkAmount[playerid] = CreatePlayerTextDraw(playerid, 155.000000, 318.000000, "1");
+	PlayerTextDrawFont(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkEditTxtTrunkAmount[playerid], 0.224996, 1.499999);
+	PlayerTextDrawTextSize(playerid, trunkEditTxtTrunkAmount[playerid], 287.000000, 13.500000);
+	PlayerTextDrawSetOutline(playerid, trunkEditTxtTrunkAmount[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkEditTxtTrunkAmount[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkEditTxtTrunkAmount[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkEditTxtTrunkAmount[playerid], 200);
+	PlayerTextDrawUseBox(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkEditTxtTrunkAmount[playerid], 1);
+
+	trunkBtnTake[playerid] = CreatePlayerTextDraw(playerid, 189.000000, 339.000000, " NEHMEN");
+	PlayerTextDrawFont(playerid, trunkBtnTake[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, trunkBtnTake[playerid], 0.229166, 1.600000);
+	PlayerTextDrawTextSize(playerid, trunkBtnTake[playerid], 250.000000, 13.500000);
+	PlayerTextDrawSetOutline(playerid, trunkBtnTake[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBtnTake[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBtnTake[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBtnTake[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBtnTake[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBtnTake[playerid], -8388473);
+	PlayerTextDrawUseBox(playerid, trunkBtnTake[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBtnTake[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBtnTake[playerid], 1);
+
+	trunkBoxHeaderInv[playerid] = CreatePlayerTextDraw(playerid, 361.000000, 114.000000, "Spielerinventar");
+	PlayerTextDrawFont(playerid, trunkBoxHeaderInv[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxHeaderInv[playerid], 0.224996, 1.499999);
+	PlayerTextDrawTextSize(playerid, trunkBoxHeaderInv[playerid], 493.000000, 199.000000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxHeaderInv[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBoxHeaderInv[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkBoxHeaderInv[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBoxHeaderInv[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxHeaderInv[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBoxHeaderInv[playerid], -8388408);
+	PlayerTextDrawUseBox(playerid, trunkBoxHeaderInv[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxHeaderInv[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxHeaderInv[playerid], 0);
+
+	trunkBoxInvBackground[playerid] = CreatePlayerTextDraw(playerid, 427.000000, 130.000000, "_");
+	PlayerTextDrawFont(playerid, trunkBoxInvBackground[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkBoxInvBackground[playerid], 0.633333, 20.250024);
+	PlayerTextDrawTextSize(playerid, trunkBoxInvBackground[playerid], 298.500000, 132.000000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxInvBackground[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, trunkBoxInvBackground[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBoxInvBackground[playerid], 2);
+	PlayerTextDrawColor(playerid, trunkBoxInvBackground[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxInvBackground[playerid], -741092353);
+	PlayerTextDrawBoxColor(playerid, trunkBoxInvBackground[playerid], 1296911686);
+	PlayerTextDrawUseBox(playerid, trunkBoxInvBackground[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxInvBackground[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxInvBackground[playerid], 0);
+
+	trunkEditTxtInvAmount[playerid] = CreatePlayerTextDraw(playerid, 361.000000, 318.000000, "1");
+	PlayerTextDrawFont(playerid, trunkEditTxtInvAmount[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkEditTxtInvAmount[playerid], 0.224996, 1.499999);
+	PlayerTextDrawTextSize(playerid, trunkEditTxtInvAmount[playerid], 493.000000, 13.500000);
+	PlayerTextDrawSetOutline(playerid, trunkEditTxtInvAmount[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkEditTxtInvAmount[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkEditTxtInvAmount[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkEditTxtInvAmount[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkEditTxtInvAmount[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkEditTxtInvAmount[playerid], 200);
+	PlayerTextDrawUseBox(playerid, trunkEditTxtInvAmount[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkEditTxtInvAmount[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkEditTxtInvAmount[playerid], 1);
+
+	trunkBoxStore[playerid] = CreatePlayerTextDraw(playerid, 403.000000, 339.000000, " Lagern");
+	PlayerTextDrawFont(playerid, trunkBoxStore[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, trunkBoxStore[playerid], 0.229166, 1.600000);
+	PlayerTextDrawTextSize(playerid, trunkBoxStore[playerid], 464.500000, 13.500000);
+	PlayerTextDrawSetOutline(playerid, trunkBoxStore[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkBoxStore[playerid], 0);
+	PlayerTextDrawAlignment(playerid, trunkBoxStore[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkBoxStore[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkBoxStore[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkBoxStore[playerid], -8388473);
+	PlayerTextDrawUseBox(playerid, trunkBoxStore[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkBoxStore[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkBoxStore[playerid], 1);
+
+	trunkTextItem1[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 131.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem1[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem1[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem1[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem1[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem1[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem1[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem1[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem1[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem1[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem1[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem1[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem1[playerid], 1);
+
+	trunkTextItem2[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 145.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem2[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem2[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem2[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem2[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem2[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem2[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem2[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem2[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem2[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem2[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem2[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem2[playerid], 1);
+
+	trunkTextItem3[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 159.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem3[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem3[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem3[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem3[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem3[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem3[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem3[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem3[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem3[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem3[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem3[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem3[playerid], 1);
+
+	trunkTextItem4[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 173.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem4[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem4[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem4[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem4[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem4[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem4[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem4[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem4[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem4[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem4[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem4[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem4[playerid], 1);
+
+	trunkTextItem5[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 187.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem5[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem5[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem5[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem5[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem5[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem5[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem5[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem5[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem5[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem5[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem5[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem5[playerid], 1);
+
+	trunkTextItem6[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 201.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem6[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem6[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem6[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem6[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem6[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem6[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem6[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem6[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem6[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem6[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem6[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem6[playerid], 1);
+
+	trunkTextItem7[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 215.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem7[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem7[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem7[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem7[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem7[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem7[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem7[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem7[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem7[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem7[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem7[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem7[playerid], 1);
+
+	trunkTextItem8[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 229.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem8[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem8[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem8[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem8[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem8[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem8[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem8[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem8[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem8[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem8[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem8[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem8[playerid], 1);
+
+	trunkTextItem9[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 243.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem9[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem9[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem9[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem9[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem9[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem9[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem9[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem9[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem9[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem9[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem9[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem9[playerid], 1);
+
+	trunkTextItem10[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 257.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem10[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem10[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem10[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem10[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem10[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem10[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem10[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem10[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem10[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem10[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem10[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem10[playerid], 1);
+
+	trunkTextItem11[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 271.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem11[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem11[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem11[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem11[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem11[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem11[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem11[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem11[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem11[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem11[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem11[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem11[playerid], 1);
+
+	trunkTextItem12[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 285.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem12[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem12[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem12[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem12[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem12[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem12[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem12[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem12[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem12[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem12[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem12[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem12[playerid], 1);
+
+	trunkTextItem13[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 299.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextItem13[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextItem13[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextItem13[playerid], 285.500000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextItem13[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextItem13[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextItem13[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextItem13[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextItem13[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextItem13[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextItem13[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextItem13[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextItem13[playerid], 1);
+
+	trunkTextInvItem1[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 131.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem1[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem1[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem1[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem1[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem1[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem1[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem1[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem1[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem1[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem1[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem1[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem1[playerid], 1);
+
+	trunkTextInvItem2[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 145.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem2[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem2[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem2[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem2[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem2[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem2[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem2[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem2[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem2[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem2[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem2[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem2[playerid], 1);
+
+	trunkTextInvItem3[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 159.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem3[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem3[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem3[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem3[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem3[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem3[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem3[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem3[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem3[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem3[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem3[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem3[playerid], 1);
+
+	trunkTextInvItem4[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 173.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem4[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem4[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem4[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem4[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem4[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem4[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem4[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem4[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem4[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem4[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem4[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem4[playerid], 1);
+
+	trunkTextInvItem5[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 187.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem5[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem5[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem5[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem5[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem5[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem5[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem5[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem5[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem5[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem5[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem5[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem5[playerid], 1);
+
+	trunkTextInvItem6[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 201.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem6[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem6[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem6[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem6[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem6[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem6[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem6[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem6[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem6[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem6[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem6[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem6[playerid], 1);
+
+	trunkTextInvItem7[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 215.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem7[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem7[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem7[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem7[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem7[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem7[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem7[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem7[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem7[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem7[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem7[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem7[playerid], 1);
+
+	trunkTextInvItem8[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 229.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem8[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem8[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem8[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem8[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem8[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem8[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem8[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem8[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem8[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem8[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem8[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem8[playerid], 1);
+
+	trunkTextInvItem9[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 243.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem9[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem9[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem9[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem9[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem9[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem9[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem9[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem9[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem9[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem9[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem9[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem9[playerid], 1);
+
+	trunkTextInvItem10[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 257.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem10[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem10[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem10[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem10[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem10[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem10[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem10[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem10[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem10[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem10[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem10[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem10[playerid], 1);
+
+	trunkTextInvItem11[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 271.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem11[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem11[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem11[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem11[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem11[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem11[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem11[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem11[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem11[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem11[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem11[playerid], 1);
+
+	trunkTextInvItem12[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 285.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem12[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem12[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem12[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem12[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem12[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem12[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem12[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem12[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem12[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem12[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem12[playerid], 1);
+
+	trunkTextInvItem13[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 299.000000, "[33] - Schildkröten Fleisch");
+	PlayerTextDrawFont(playerid, trunkTextInvItem13[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, trunkTextInvItem13[playerid], 0.212500, 1.250000);
+	PlayerTextDrawTextSize(playerid, trunkTextInvItem13[playerid], 492.000000, 10.000000);
+	PlayerTextDrawSetOutline(playerid, trunkTextInvItem13[playerid], 0);
+	PlayerTextDrawSetShadow(playerid, trunkTextInvItem13[playerid], 1);
+	PlayerTextDrawAlignment(playerid, trunkTextInvItem13[playerid], 1);
+	PlayerTextDrawColor(playerid, trunkTextInvItem13[playerid], -1);
+	PlayerTextDrawBackgroundColor(playerid, trunkTextInvItem13[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, trunkTextInvItem13[playerid], -8388558);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, trunkTextInvItem13[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem13[playerid], 1);
 	return true;
 }
 

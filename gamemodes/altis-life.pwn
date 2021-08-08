@@ -1603,6 +1603,84 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
 		PlayerTextDrawUseBox(playerid, trunkTextItem13[playerid], 1);
 		PlayerTextDrawShow(playerid, trunkTextItem13[playerid]);
 	}
+	else if(playertextid == trunkTextInvItem1[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem1[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem1[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem1[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem2[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem2[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem2[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem2[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem3[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem3[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem3[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem3[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem4[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem4[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem4[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem4[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem5[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem5[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem5[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem5[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem6[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem6[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem6[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem6[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem7[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem7[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem7[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem7[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem8[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem8[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem8[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem8[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem9[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem9[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem9[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem9[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem10[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem10[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem10[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem10[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem11[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem11[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem11[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem12[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem12[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem12[playerid]);
+	}
+	else if(playertextid == trunkTextInvItem13[playerid]) {
+	    ResetTrunkTextDrawUseBoxes(playerid);
+	    PlayerTextDrawHide(playerid, trunkTextInvItem13[playerid]);
+		PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 1);
+		PlayerTextDrawShow(playerid, trunkTextInvItem13[playerid]);
+	}
 	return true;
 }
 
@@ -1696,11 +1774,16 @@ stock SetTrunkTextDrawValues(playerid, vehicleIndex) {
 		ON `storages`.`id` = `storage_items`.`storage_id` LEFT JOIN `items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storages`.`id` = '%d'", storageid);
 	mysql_tquery(dbhandle, string, "SetTrunkWeights", "d", playerid);
 	
-	// Setzt die Items
+	// Fragt die Items des Kofferraums ab
 	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`\
 	FROM `items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storage_items`.`storage_id` = '%d'", storageid);
 	mysql_tquery(dbhandle, string, "SetTrunkItems", "dd", playerid, storageid);
 
+    // Fragt die Items des Spielers ab
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`\
+	FROM `items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storage_items`.`storage_id` = '%d'", pInfo[playerid][pStorage]);
+	mysql_tquery(dbhandle, string, "SetTrunkInvItems", "dd", playerid, pInfo[playerid][pStorage]);
+	
 	return true;
 }
 
@@ -1724,6 +1807,59 @@ function SetTrunkItems(playerid, storageid) {
 	    cache_get_value_name(i, "name", name, sizeof(name));
 	    format(query, sizeof(query), "[%d]- %s", amount, name);
 	    SetTrukItems(playerid, i, query);
+	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion zeigt das Inventar im Kofferraum-Inventar in einem TextDraw an den Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  storageid   Die Storage-ID
+ *
+ */
+function SetTrunkInvItems(playerid, storageid) {
+	new query[120];
+
+	for(new i = 0; i < cache_num_rows(); i++) {
+
+		// Dialog mit Werten f�llen
+	    new amount, name[71];
+	    cache_get_value_name_int(i, "amount", amount);
+	    cache_get_value_name(i, "name", name, sizeof(name));
+	    format(query, sizeof(query), "[%d]- %s", amount, name);
+	    SetTrukInvItems(playerid, i, query);
+	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt das Inventar im Kofferraum-Text-Draw die Strings zu den Items
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid		Die ID des Spielers
+ *	@param  itemPosition	Die Position des Items im TextDraw
+ *  @param	query           Den zu setztenden Text
+ *
+ */
+stock SetTrukInvItems(playerid, itemPosition, query[]) {
+	switch(itemPosition) {
+	    case 0: { PlayerTextDrawSetString(playerid, trunkTextInvItem1[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem1[playerid], 1); }
+	    case 1: { PlayerTextDrawSetString(playerid, trunkTextInvItem2[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem2[playerid], 1); }
+		case 2: { PlayerTextDrawSetString(playerid, trunkTextInvItem3[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem3[playerid], 1); }
+		case 3: { PlayerTextDrawSetString(playerid, trunkTextInvItem4[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem4[playerid], 1); }
+		case 4: { PlayerTextDrawSetString(playerid, trunkTextInvItem5[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem5[playerid], 1); }
+		case 5: { PlayerTextDrawSetString(playerid, trunkTextInvItem6[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem6[playerid], 1); }
+		case 6: { PlayerTextDrawSetString(playerid, trunkTextInvItem7[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem7[playerid], 1); }
+		case 7: { PlayerTextDrawSetString(playerid, trunkTextInvItem8[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem8[playerid], 1); }
+		case 8: { PlayerTextDrawSetString(playerid, trunkTextInvItem9[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem9[playerid], 1); }
+		case 9: { PlayerTextDrawSetString(playerid, trunkTextInvItem10[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem10[playerid], 1); }
+		case 10: { PlayerTextDrawSetString(playerid, trunkTextInvItem11[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 1); }
+		case 11: { PlayerTextDrawSetString(playerid, trunkTextInvItem12[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 1); }
+		case 12: { PlayerTextDrawSetString(playerid, trunkTextInvItem13[playerid], query); PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 1); }
 	}
 	return true;
 }
@@ -1780,6 +1916,48 @@ stock ResetTrunkTextDrawUseBoxes(playerid) {
 	PlayerTextDrawUseBox(playerid, trunkTextItem12[playerid], 0);
 	PlayerTextDrawUseBox(playerid, trunkTextItem13[playerid], 0);
 	
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem1[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem2[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem3[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem4[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem5[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem6[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem7[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem8[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem9[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem10[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 0);
+	PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 0);
+
+	PlayerTextDrawSetString(playerid, trunkTextItem1[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem2[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem3[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem4[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem5[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem6[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem7[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem8[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem9[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem10[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem11[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem12[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem13[playerid], "");
+
+	PlayerTextDrawSetString(playerid, trunkTextInvItem1[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem2[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem3[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem4[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem5[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem6[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem7[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem8[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem9[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem10[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem11[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem12[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem13[playerid], "");
+	
  	PlayerTextDrawShow(playerid, trunkTextItem1[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextItem2[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextItem3[playerid]);
@@ -1793,6 +1971,20 @@ stock ResetTrunkTextDrawUseBoxes(playerid) {
 	PlayerTextDrawShow(playerid, trunkTextItem11[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextItem12[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextItem13[playerid]);
+	
+	PlayerTextDrawShow(playerid, trunkTextInvItem1[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem2[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem3[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem4[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem5[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem6[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem7[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem8[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem9[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem10[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem11[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem12[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem13[playerid]);
 	return true;
 }
 

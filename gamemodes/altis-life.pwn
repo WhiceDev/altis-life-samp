@@ -60,6 +60,7 @@ enum E_PLAYER {
 	pPassword[61],
 	bool:pSideChat,
 	bool:pInventoryOpend,
+	bool:pTrunkOpend,
 	pCash,
 	pBank,
 	pSkin,
@@ -453,6 +454,9 @@ public OnPlayerConnect(playerid) {
 	
 	// Inventar Text-Draw's laden
 	LoadInventoryTextDraws(playerid);
+	
+	// Kofferraum Text-Draw's laden
+	LoadTrunkTextDraws(playerid);
 	return true;
 }
 
@@ -999,7 +1003,14 @@ CMD:kofferraum(playerid, params[]) {
     format(string, sizeof(string), "~w~Kofferraum %s", status);
     GameTextForPlayer(playerid, string, 2000, 3);
     
-    OpenStorage(playerid, vInfo[vehicleIndex][vStorage]);
+    if(pInfo[playerid][pTrunkOpend]) {
+	    // Kofferraum schließen
+	    HideTrunkTextDraws(playerid);
+	} else {
+	    // Kofferraum öffnen
+	    ShowTrunkTextDraws(playerid);
+	    SetTrunkTextDrawValues(playerid, vInfo[vehicleIndex][vStorage]);
+	}
 	return 1;
 }
 
@@ -1499,15 +1510,19 @@ stock CreateStorageItemsTable() {
  *  @param  playertextid    Die ID des ausgewählten Player-TextDraws.
  */
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
-    // Text-Draw 'Schließen' wurde angeklickt
+    // Text-Draw 'Schließen' im Inventory-Text-Draw wurde angeklickt
     if(playertextid == inventoryButtonClose[playerid]) {
         HideInventoryTextDraws(playerid);
     }
-    // Text-Draw 'Update' wurde angeklickt
+    // Text-Draw 'Update' im Inventory-Text-Draw wurde angeklickt
 	else if(playertextid == inventoryButtonUpdate[playerid]) {
 	    SavePlayer(playerid);
 	    SCM(playerid, COLOR_WHITE, "=> Deine Daten wurden gespeichert");
 	    HideInventoryTextDraws(playerid);
+	}
+	// // Text-Draw 'Schließen' im Kofferraum-Text-Draw wurde angeklickt
+	else if(playertextid == trunkBtnClose[playerid]) {
+	    HideTrunkTextDraws(playerid);
 	}
 	return true;
 }
@@ -1583,6 +1598,43 @@ stock SetInventoryTextDrawValues(playerid) {
 
 /*
  *
+ *	Diese Funktion setzt die variablen Werte im Kofferraum-System
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ *  @param  storageid   Die ID des Fahrzeug-Storages
+ *
+ */
+stock SetTrunkTextDrawValues(playerid, storageid) {
+
+	new string[300];
+	// Setzt das Gewicht
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `storages`.`capacity`, SUM(`items`.`weight` * `storage_items`.`amount`) AS 'weight' FROM `storages` LEFT JOIN `storage_items`\
+		ON `storages`.`id` = `storage_items`.`storage_id` LEFT JOIN `items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storages`.`id` = '%d'", storageid);
+	mysql_tquery(dbhandle, string, "SetTrunkWeights", "d", playerid);
+
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt das Gewicht im Kofferraum-Textdraw
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+function SetTrunkWeights(playerid) {
+
+    new string[128], maxCapacity, capacity;
+	cache_get_value_name_int(0, "weight", capacity);
+	cache_get_value_name_int(0, "capacity", maxCapacity);
+	format(string, sizeof(string), "Weight: %d / %d kg", capacity, maxCapacity);
+    PlayerTextDrawSetString(playerid, trunkTxtWeight[playerid], string);
+	return true;
+}
+
+/*
+ *
  *	Diese Funktion setzt das Gewicht im Inventar-Textdraw
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -1641,6 +1693,110 @@ stock ShowInventoryTextDraws(playerid) {
 
 /*
  *
+ *	Diese Funktion zeigt die Kofferraum Text-Draws für den Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock ShowTrunkTextDraws(playerid) {
+    PlayerTextDrawShow(playerid, trunkBoxBackground[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxHeader[playerid]);
+	PlayerTextDrawShow(playerid, trunkBtnClose[playerid]);
+	PlayerTextDrawShow(playerid, trunkTxtWeight[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxHeaderTrunk[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxTrunkBackground[playerid]);
+	PlayerTextDrawShow(playerid, trunkEditTxtTrunkAmount[playerid]);
+	PlayerTextDrawShow(playerid, trunkBtnTake[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxHeaderInv[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxInvBackground[playerid]);
+	PlayerTextDrawShow(playerid, trunkEditTxtInvAmount[playerid]);
+	PlayerTextDrawShow(playerid, trunkBoxStore[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem1[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem2[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem3[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem4[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem5[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem6[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem7[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem8[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem9[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem10[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem11[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem12[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextItem13[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem1[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem2[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem3[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem4[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem5[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem6[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem7[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem8[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem9[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem10[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem11[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem12[playerid]);
+	PlayerTextDrawShow(playerid, trunkTextInvItem13[playerid]);
+	
+	SelectTextDraw(playerid, COLOR_ORANGE);
+	pInfo[playerid][pTrunkOpend] = true;
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion versteckt die Kofferraum Text-Draws vor dem Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock HideTrunkTextDraws(playerid) {
+    PlayerTextDrawHide(playerid, trunkBoxBackground[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxHeader[playerid]);
+	PlayerTextDrawHide(playerid, trunkBtnClose[playerid]);
+	PlayerTextDrawHide(playerid, trunkTxtWeight[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxHeaderTrunk[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxTrunkBackground[playerid]);
+	PlayerTextDrawHide(playerid, trunkEditTxtTrunkAmount[playerid]);
+	PlayerTextDrawHide(playerid, trunkBtnTake[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxHeaderInv[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxInvBackground[playerid]);
+	PlayerTextDrawHide(playerid, trunkEditTxtInvAmount[playerid]);
+	PlayerTextDrawHide(playerid, trunkBoxStore[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem1[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem2[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem3[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem4[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem5[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem6[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem7[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem8[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem9[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem10[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem11[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem12[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextItem13[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem1[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem2[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem3[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem4[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem5[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem6[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem7[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem8[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem9[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem10[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem11[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem12[playerid]);
+	PlayerTextDrawHide(playerid, trunkTextInvItem13[playerid]);
+	
+	CancelSelectTextDraw(playerid);
+	pInfo[playerid][pTrunkOpend] = false;
+	return true;
+}
+
+/*
+ *
  *	Diese Funktion versteckt die Inventar Text-Draws vor dem Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -1680,7 +1836,7 @@ stock HideInventoryTextDraws(playerid) {
 
 /*
  *
- *	Diese Funktion lï¿½dt die Trunk Text-Draws fï¿½r den angegeben Spieler
+ *	Diese Funktion lädt die Trunk Text-Draws für den angegeben Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param  playerid	Die ID des Spielers

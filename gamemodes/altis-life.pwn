@@ -2010,7 +2010,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkBoxStore[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkBoxStore[playerid], 1);
 
-	trunkTextItem1[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 131.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem1[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 131.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem1[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem1[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem1[playerid], 285.500000, 10.000000);
@@ -2024,7 +2024,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem1[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem1[playerid], 1);
 
-	trunkTextItem2[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 145.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem2[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 145.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem2[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem2[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem2[playerid], 285.500000, 10.000000);
@@ -2038,7 +2038,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem2[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem2[playerid], 1);
 
-	trunkTextItem3[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 159.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem3[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 159.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem3[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem3[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem3[playerid], 285.500000, 10.000000);
@@ -2052,7 +2052,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem3[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem3[playerid], 1);
 
-	trunkTextItem4[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 173.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem4[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 173.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem4[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem4[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem4[playerid], 285.500000, 10.000000);
@@ -2066,7 +2066,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem4[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem4[playerid], 1);
 
-	trunkTextItem5[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 187.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem5[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 187.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem5[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem5[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem5[playerid], 285.500000, 10.000000);
@@ -2080,7 +2080,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem5[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem5[playerid], 1);
 
-	trunkTextItem6[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 201.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem6[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 201.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem6[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem6[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem6[playerid], 285.500000, 10.000000);
@@ -2094,7 +2094,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem6[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem6[playerid], 1);
 
-	trunkTextItem7[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 215.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem7[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 215.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem7[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem7[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem7[playerid], 285.500000, 10.000000);
@@ -2108,7 +2108,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem7[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem7[playerid], 1);
 
-	trunkTextItem8[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 229.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem8[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 229.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem8[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem8[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem8[playerid], 285.500000, 10.000000);
@@ -2122,7 +2122,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem8[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem8[playerid], 1);
 
-	trunkTextItem9[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 243.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem9[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 243.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem9[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem9[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem9[playerid], 285.500000, 10.000000);
@@ -2136,7 +2136,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem9[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem9[playerid], 1);
 
-	trunkTextItem10[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 257.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem10[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 257.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem10[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem10[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem10[playerid], 285.500000, 10.000000);
@@ -2150,7 +2150,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem10[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem10[playerid], 1);
 
-	trunkTextItem11[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 271.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem11[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 271.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem11[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem11[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem11[playerid], 285.500000, 10.000000);
@@ -2164,7 +2164,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem11[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem11[playerid], 1);
 
-	trunkTextItem12[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 285.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem12[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 285.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem12[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem12[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem12[playerid], 285.500000, 10.000000);
@@ -2178,7 +2178,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem12[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem12[playerid], 1);
 
-	trunkTextItem13[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 299.000000, "[33] - Schildkröten Fleisch");
+	trunkTextItem13[playerid] = CreatePlayerTextDraw(playerid, 156.000000, 299.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextItem13[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextItem13[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextItem13[playerid], 285.500000, 10.000000);
@@ -2192,7 +2192,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextItem13[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextItem13[playerid], 1);
 
-	trunkTextInvItem1[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 131.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem1[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 131.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem1[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem1[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem1[playerid], 492.000000, 10.000000);
@@ -2206,7 +2206,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem1[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem1[playerid], 1);
 
-	trunkTextInvItem2[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 145.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem2[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 145.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem2[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem2[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem2[playerid], 492.000000, 10.000000);
@@ -2220,7 +2220,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem2[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem2[playerid], 1);
 
-	trunkTextInvItem3[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 159.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem3[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 159.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem3[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem3[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem3[playerid], 492.000000, 10.000000);
@@ -2234,7 +2234,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem3[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem3[playerid], 1);
 
-	trunkTextInvItem4[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 173.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem4[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 173.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem4[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem4[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem4[playerid], 492.000000, 10.000000);
@@ -2248,7 +2248,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem4[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem4[playerid], 1);
 
-	trunkTextInvItem5[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 187.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem5[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 187.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem5[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem5[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem5[playerid], 492.000000, 10.000000);
@@ -2262,7 +2262,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem5[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem5[playerid], 1);
 
-	trunkTextInvItem6[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 201.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem6[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 201.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem6[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem6[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem6[playerid], 492.000000, 10.000000);
@@ -2276,7 +2276,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem6[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem6[playerid], 1);
 
-	trunkTextInvItem7[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 215.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem7[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 215.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem7[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem7[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem7[playerid], 492.000000, 10.000000);
@@ -2290,7 +2290,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem7[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem7[playerid], 1);
 
-	trunkTextInvItem8[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 229.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem8[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 229.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem8[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem8[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem8[playerid], 492.000000, 10.000000);
@@ -2304,7 +2304,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem8[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem8[playerid], 1);
 
-	trunkTextInvItem9[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 243.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem9[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 243.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem9[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem9[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem9[playerid], 492.000000, 10.000000);
@@ -2318,7 +2318,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem9[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem9[playerid], 1);
 
-	trunkTextInvItem10[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 257.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem10[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 257.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem10[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem10[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem10[playerid], 492.000000, 10.000000);
@@ -2332,7 +2332,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem10[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem10[playerid], 1);
 
-	trunkTextInvItem11[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 271.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem11[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 271.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem11[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem11[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem11[playerid], 492.000000, 10.000000);
@@ -2346,7 +2346,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem11[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem11[playerid], 1);
 
-	trunkTextInvItem12[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 285.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem12[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 285.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem12[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem12[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem12[playerid], 492.000000, 10.000000);
@@ -2360,7 +2360,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkTextInvItem12[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkTextInvItem12[playerid], 1);
 
-	trunkTextInvItem13[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 299.000000, "[33] - Schildkröten Fleisch");
+	trunkTextInvItem13[playerid] = CreatePlayerTextDraw(playerid, 362.000000, 299.000000, "");
 	PlayerTextDrawFont(playerid, trunkTextInvItem13[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTextInvItem13[playerid], 0.212500, 1.250000);
 	PlayerTextDrawTextSize(playerid, trunkTextInvItem13[playerid], 492.000000, 10.000000);

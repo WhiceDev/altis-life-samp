@@ -49,7 +49,9 @@ new startTime;
 enum {
 	D_LOGIN = 1,
 	D_REGISTER,
-	D_SHOWSTORAGE
+	D_SHOWSTORAGE,
+	D_SETTRUNKAMOUNT,
+	D_SETTRUNKINVAMOUNT
 }
 
 enum E_PLAYER {
@@ -541,6 +543,32 @@ function AccountCheck(playerid) {
 
 /*
  *
+ *  Zeigt den Kofferraum-Anzahl-Setzten Dialog für den angegeben Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *
+ */
+stock ShowTrunkSetAmountDialog(playerid) {
+	SPD(playerid, D_SETTRUNKAMOUNT, DIALOG_STYLE_INPUT, D_WHITE"Kofferraum - Itemanzahl", D_WHITE"Gebe eine neue Zahl ein: (1-99)", D_WHITE"Setzten", D_WHITE"Abbrechen");
+	return true;
+}
+
+/*
+ *
+ *  Zeigt den Kofferraum-Inventar-Anzahl-Setzten Dialog für den angegeben Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *
+ */
+stock ShowTrunkInvSetAmountDialog(playerid) {
+	SPD(playerid, D_SETTRUNKINVAMOUNT, DIALOG_STYLE_INPUT, D_WHITE"Kofferraum Inventar - Itemanzahl", D_WHITE"Gebe eine neue Zahl ein: (1-99)", D_WHITE"Setzten", D_WHITE"Abbrechen");
+	return true;
+}
+
+/*
+ *
  *  Zeigt den Einloggen-Dialog für den angegeben Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -629,6 +657,48 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(pInfo[playerid][pSalt], sizeof(salt), salt);
 				format(password, sizeof(password), "%s%s", inputtext, salt);
 				bcrypt_hash(password, BCRYPT_COST, "OnPasswordHashed", "d", playerid);
+				return true;
+			}
+	    }
+	    case D_SETTRUNKAMOUNT: {
+	        if(!response) {
+				// Auf 'Abbrechen' gedrückt
+				return true;
+			} else {
+			    // Auf 'Setzten' gedrückt
+			    if(!IsNumber(inputtext)) {
+			        SCM(playerid, COLOR_RED, "[FEHLER]: Es darf nur eine Zahl zwischen 1-99 sein");
+			        ShowTrunkSetAmountDialog(playerid);
+			        return true;
+			    }
+				new value = strval(inputtext);
+				if(value < 1 || value > 99) {
+				    SCM(playerid, COLOR_RED, "[FEHLER]: Es darf nur eine Zahl zwischen 1-99 sein");
+			        ShowTrunkSetAmountDialog(playerid);
+			        return true;
+				}
+				PlayerTextDrawSetString(playerid, trunkEditTxtTrunkAmount[playerid], inputtext);
+				return true;
+			}
+	    }
+	    case D_SETTRUNKINVAMOUNT: {
+	        if(!response) {
+				// Auf 'Abbrechen' gedrückt
+				return true;
+			} else {
+			    // Auf 'Setzten' gedrückt
+			    if(!IsNumber(inputtext)) {
+			        SCM(playerid, COLOR_RED, "[FEHLER]: Es darf nur eine Zahl zwischen 1-99 sein");
+			        ShowTrunkInvSetAmountDialog(playerid);
+			        return true;
+			    }
+				new value = strval(inputtext);
+				if(value < 1 || value > 99) {
+				    SCM(playerid, COLOR_RED, "[FEHLER]: Es darf nur eine Zahl zwischen 1-99 sein");
+			        ShowTrunkInvSetAmountDialog(playerid);
+			        return true;
+				}
+				PlayerTextDrawSetString(playerid, trunkEditTxtInvAmount[playerid], inputtext);
 				return true;
 			}
 	    }
@@ -1501,6 +1571,15 @@ stock CreateStorageItemsTable() {
 	return true;
 }
 
+CMD:test(playerid, params[]) {
+	new itemid, amount, playerStorage, vehicleStorage;
+	if(sscanf(params, "dddd", itemid, amount, playerStorage, vehicleStorage)) return SCM(playerid, -1, "Inkompetent");
+	new query[128];
+    mysql_format(dbhandle, query, sizeof(query), "CALL storage_transfer(%d, %d, %d, %d)", itemid, amount, playerStorage, vehicleStorage);
+    mysql_tquery(dbhandle, query);
+	return true;
+}
+
 
 /*
  *
@@ -1525,6 +1604,23 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
 	else if(playertextid == trunkBtnClose[playerid]) {
 	    cmd_kofferraum(playerid, "");
 	}
+	// Setzte im Kofferraum TextDraw Amount
+	else if(playertextid == trunkEditTxtTrunkAmount[playerid]) {
+	    ShowTrunkSetAmountDialog(playerid);
+	}
+	// Setzte das Inventar im Kofferraum TextDraw Amount
+	else if(playertextid == trunkEditTxtInvAmount[playerid]) {
+	    ShowTrunkInvSetAmountDialog(playerid);
+	}
+	// Lagert Items vom Spielerinventar in den Kofferraum
+	else if(playertextid == trunkBoxStore[playerid]) {
+	
+	}
+	// Lagert Items vom Kofferraum in das Spielerinventar
+	else if(playertextid == trunkBtnTake[playerid]) {
+	
+	}
+	// Kofferraum Inventar Items
 	else if(playertextid == trunkTextItem1[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem1[playerid]);
@@ -1825,7 +1921,7 @@ function SetTrunkInvItems(playerid, storageid) {
 
 	for(new i = 0; i < cache_num_rows(); i++) {
 
-		// Dialog mit Werten fï¿½llen
+		// Dialog mit Werten füllen
 	    new amount, name[71];
 	    cache_get_value_name_int(i, "amount", amount);
 	    cache_get_value_name(i, "name", name, sizeof(name));
@@ -1929,34 +2025,6 @@ stock ResetTrunkTextDrawUseBoxes(playerid) {
 	PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 0);
 	PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 0);
 	PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 0);
-
-	PlayerTextDrawSetString(playerid, trunkTextItem1[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem2[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem3[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem4[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem5[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem6[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem7[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem8[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem9[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem10[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem11[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem12[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextItem13[playerid], "");
-
-	PlayerTextDrawSetString(playerid, trunkTextInvItem1[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem2[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem3[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem4[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem5[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem6[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem7[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem8[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem9[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem10[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem11[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem12[playerid], "");
-	PlayerTextDrawSetString(playerid, trunkTextInvItem13[playerid], "");
 	
  	PlayerTextDrawShow(playerid, trunkTextItem1[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextItem2[playerid]);
@@ -2061,6 +2129,28 @@ stock ShowInventoryTextDraws(playerid) {
 	SetInventoryTextDrawValues(playerid);
 	pInfo[playerid][pInventoryOpend] = true;
 	return true;
+}
+
+/*
+ *
+ *	Diese Funktion überprüft, ob ein eingehender
+ *	String ein Integer also eine Zahl ist
+ *	Geschrieben von Jeffry: https://breadfish.de/wcf/user/30312-jeffry/
+ *
+ *	@param  str   Zu überprüfender String
+ *	@return 0 - Wenn keine Zahl, 1 - Wenn eine Zahl
+ *
+ */
+stock IsNumber(str[]) {
+	if(!strlen(str)) return 0;
+	for(new i = 0, j = strlen(str); i < j; i++) {
+		switch(str[i]) {
+			case '0'..'9': continue;
+			case '+', '-': if(i == 0) continue;
+		}
+		return 0;
+	}
+	return 1;
 }
 
 /*
@@ -2349,6 +2439,35 @@ stock ShowTrunkTextDraws(playerid) {
  *	@param  playerid	Die ID des Spielers
  */
 stock HideTrunkTextDraws(playerid) {
+
+    PlayerTextDrawSetString(playerid, trunkTextItem1[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem2[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem3[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem4[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem5[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem6[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem7[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem8[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem9[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem10[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem11[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem12[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextItem13[playerid], "");
+
+	PlayerTextDrawSetString(playerid, trunkTextInvItem1[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem2[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem3[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem4[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem5[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem6[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem7[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem8[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem9[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem10[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem11[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem12[playerid], "");
+	PlayerTextDrawSetString(playerid, trunkTextInvItem13[playerid], "");
+
     PlayerTextDrawHide(playerid, trunkBoxBackground[playerid]);
 	PlayerTextDrawHide(playerid, trunkBoxHeader[playerid]);
 	PlayerTextDrawHide(playerid, trunkBtnClose[playerid]);

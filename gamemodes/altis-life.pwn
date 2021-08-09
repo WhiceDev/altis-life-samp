@@ -1377,10 +1377,73 @@ stock CreateDatabaseTables() {
 	CreateStoragesTable();
 	CreateStorageItemsTable();
 	CreateVehicleTable();
+	
+	// Todo: Überprüfen warum es nicht funktioniert
+	//CreateTransferProcedure();
 
 	CreateDefaultItems();
 	
 	return true;
+}
+
+/*
+ *
+ *	Diese Funktion erstellt die 'storage_transfer' Prozedur in der Datebank, falls sie noch nicht existiert
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ */
+stock CreateTransferProcedure() {
+    new query[1600];
+    format(query, sizeof(query), "\
+        DELIMITER $$\
+		CREATE PROCEDURE IF NOT EXISTS `storage_transfer`(\
+			IN `item_id` int,\
+			IN `amount` int,\
+			IN `from_storage` int,\
+			IN `into_storage` int)");
+    format(query, sizeof(query), "\
+	 	%s\
+		LANGUAGE SQL\
+		NOT DETERMINISTIC\
+		CONTAINS SQL\
+		SQL SECURITY DEFINER\
+		COMMENT 'transfer items between storages'\
+		this_proc:begin", query);
+	format(query, sizeof(query), "\
+ 		%s\
+		START TRANSACTION;\
+			SET autocommit = 0;\"\
+			SELECT IFNULL(`storage_items`.`amount`, -999) INTO @c1 FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = from_storage;\
+			SELECT IFNULL(`storage_items`.`amount`, -999) INTO @c2 FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = into_storage;", query);
+	format(query, sizeof(query), "\
+		 	%s\
+			IF @c1 - amount < 0 OR @c1 - amount > 99 OR ISNULL(@c1) THEN\
+				ROLLBACK;\
+				LEAVE this_proc;\
+			ELSEIF @c1 - amount = 0 THEN\
+				DELETE FROM `storage_items` WHERE `storage_items`.`storage_id` = from_storage AND `storage_items`.`item_id` = item_id;\
+			ELSE\
+				UPDATE `storage_items` SET `storage_items`.`amount` = `storage_items`.`amount` - amount WHERE `storage_items`.`storage_id` = from_storage AND `storage_items`.`item_id` = item_id;\
+			END IF;", query);
+    format(query, sizeof(query), "\
+		 	%s\
+			IF @c2 + amount < 0 OR @c2 + amount > 99 THEN\
+				ROLLBACK;\
+				LEAVE this_proc;\
+			ELSEIF @c2 = -999 OR ISNULL(@c2) THEN\
+				INSERT INTO `storage_items` (`item_id`, `storage_id`, `amount`) VALUES (item_id, into_storage, amount);\
+			ELSE\
+				UPDATE `storage_items` SET `storage_items`.`amount` = `storage_items`.`amount` + amount WHERE `storage_items`.`storage_id` = into_storage AND `storage_items`.`item_id` = item_id;\
+			END IF;\
+			COMMIT WORK;\
+			SET autocommit = 1;\
+		END $$\
+		DELIMITER ;", query);
+
+
+	//printf("store_transfer procedure: %d", strlen(query)); // 1493
+
+	mysql_tquery(dbhandle, query);
 }
 
 /*

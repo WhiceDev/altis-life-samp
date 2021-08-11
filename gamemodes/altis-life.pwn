@@ -93,7 +93,14 @@ enum E_PLAYER {
 	pAmmo11,
 	pWeapon12,
 	pAmmo12,
-	pStorage
+	pStorage,
+	pInvItems[14],
+	pTrunkItems[14],
+	pTrunkActiveItem,
+	pInvActiveItem,
+	pTrunkActiveVehIndex,
+	pTrunkAmount,
+	pInvAmount
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -459,6 +466,18 @@ public OnPlayerConnect(playerid) {
 	
 	// Kofferraum Text-Draw's laden
 	LoadTrunkTextDraws(playerid);
+	
+	// Reset Player Variables
+	pInfo[playerid][pTrunkActiveItem] = -1;
+	pInfo[playerid][pInvActiveItem] = -1;
+	pInfo[playerid][pTrunkActiveVehIndex] = -1;
+	pInfo[playerid][pTrunkAmount] = 1;
+	pInfo[playerid][pInvAmount] = 1;
+
+	for(new i; i < pInfo[playerid][pTrunkItems]; i++) {
+	    pInfo[playerid][pInvItems][i] = -1;
+		pInfo[playerid][pTrunkItems][i] = -1;
+	}
 	return true;
 }
 
@@ -677,7 +696,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			        ShowTrunkSetAmountDialog(playerid);
 			        return true;
 				}
-				PlayerTextDrawSetString(playerid, trunkEditTxtTrunkAmount[playerid], inputtext);
+				pInfo[playerid][pTrunkAmount] = value;
+				new text[5];
+				format(text, sizeof(text), "%d", value);
+				PlayerTextDrawSetString(playerid, trunkEditTxtTrunkAmount[playerid], text);
 				return true;
 			}
 	    }
@@ -698,7 +720,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			        ShowTrunkInvSetAmountDialog(playerid);
 			        return true;
 				}
-				PlayerTextDrawSetString(playerid, trunkEditTxtInvAmount[playerid], inputtext);
+				pInfo[playerid][pInvAmount] = value;
+				new text[5];
+				format(text, sizeof(text), "%d", value);
+				PlayerTextDrawSetString(playerid, trunkEditTxtInvAmount[playerid], text);
 				return true;
 			}
 	    }
@@ -1071,6 +1096,7 @@ CMD:kofferraum(playerid, params[]) {
 		status = "~g~geoeffnet";
 		// Kofferraum TextDraw öffnen
 	    ShowTrunkTextDraws(playerid);
+	    ResetTrunkTextDrawUseBoxes(playerid);
 	    SetTrunkTextDrawValues(playerid, vehicleIndex);
   	}
 	else {
@@ -1609,7 +1635,7 @@ stock CreateStoragesTable() {
 /*
  *
  *	Diese Funktion erstellt die 'storage_items' Tabelle in der Datebank, falls sie noch nicht existiert
- *	Dieses Callback benutzt den Return-Wert nicht.
+ *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
 stock CreateStorageItemsTable() {
@@ -1634,13 +1660,16 @@ stock CreateStorageItemsTable() {
 	return true;
 }
 
-CMD:test(playerid, params[]) {
-	new itemid, amount, playerStorage, vehicleStorage;
-	if(sscanf(params, "dddd", itemid, amount, playerStorage, vehicleStorage)) return SCM(playerid, -1, "Inkompetent");
-	new query[128];
-    mysql_format(dbhandle, query, sizeof(query), "CALL storage_transfer(%d, %d, %d, %d)", itemid, amount, playerStorage, vehicleStorage);
-    mysql_tquery(dbhandle, query);
-	return true;
+/*
+ *
+ *	Dieses Callback öffnet den Kofferraum des Fahrzeuges neu
+ *	Dieses Callback benutzt den Return-Wert nicht.
+ *
+ */
+function OnStoreItemsTrunk(playerid, vehicleIndex) {
+    HideTrunkTextDraws(playerid);
+ 	SetTrunkTextDrawValues(playerid, vehicleIndex);
+	ShowTrunkTextDraws(playerid);
 }
 
 
@@ -1651,6 +1680,7 @@ CMD:test(playerid, params[]) {
  *
  *	@param  playerid    Die ID des Spielers
  *  @param  playertextid    Die ID des ausgewählten Player-TextDraws.
+ *
  */
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     // Text-Draw 'Schließen' im Inventory-Text-Draw wurde angeklickt
@@ -1677,167 +1707,201 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
 	}
 	// Lagert Items vom Spielerinventar in den Kofferraum
 	else if(playertextid == trunkBoxStore[playerid]) {
-	
+	    new query[128], vehicleIndex = pInfo[playerid][pTrunkActiveVehIndex];
+	    mysql_format(dbhandle, query, sizeof(query), "CALL storage_transfer(%d, %d, %d, %d)", pInfo[playerid][pInvActiveItem], pInfo[playerid][pInvAmount], pInfo[playerid][pStorage], vInfo[vehicleIndex][vStorage]);
+    	mysql_tquery(dbhandle, query, "OnStoreItemsTrunk", "dd", playerid, vehicleIndex);
+    	format(query, sizeof(query), "(%dx) Item (%d) von Inventar (%d) in Kofferraum (%d) eingelagert", pInfo[playerid][pInvAmount], pInfo[playerid][pInvActiveItem], pInfo[playerid][pStorage], vInfo[vehicleIndex][vStorage]);
+    	SCM(playerid, -1, query);
 	}
 	// Lagert Items vom Kofferraum in das Spielerinventar
 	else if(playertextid == trunkBtnTake[playerid]) {
-	
+	    new query[128], vehicleIndex = pInfo[playerid][pTrunkActiveVehIndex];
+	    mysql_format(dbhandle, query, sizeof(query), "CALL storage_transfer(%d, %d, %d, %d)", pInfo[playerid][pTrunkActiveItem], pInfo[playerid][pTrunkAmount], vInfo[vehicleIndex][vStorage], pInfo[playerid][pStorage]);
+    	mysql_tquery(dbhandle, query, "OnStoreItemsTrunk", "dd", playerid, vehicleIndex);
+    	format(query, sizeof(query), "(%dx) Item (%d) von Kofferraum (%d) in Inventar (%d) entladen", pInfo[playerid][pInvAmount], pInfo[playerid][pInvActiveItem], vInfo[vehicleIndex][vStorage], pInfo[playerid][pStorage]);
+    	SCM(playerid, -1, query);
 	}
 	// Kofferraum Inventar Items
 	else if(playertextid == trunkTextItem1[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem1[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem1[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][0];
 		PlayerTextDrawShow(playerid, trunkTextItem1[playerid]);
 	}
 	else if(playertextid == trunkTextItem2[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem2[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem2[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][1];
 		PlayerTextDrawShow(playerid, trunkTextItem2[playerid]);
 	}
 	else if(playertextid == trunkTextItem3[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem3[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem3[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][2];
 		PlayerTextDrawShow(playerid, trunkTextItem3[playerid]);
 	}
 	else if(playertextid == trunkTextItem4[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem4[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem4[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][3];
 		PlayerTextDrawShow(playerid, trunkTextItem4[playerid]);
 	}
 	else if(playertextid == trunkTextItem5[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem5[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem5[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][4];
 		PlayerTextDrawShow(playerid, trunkTextItem5[playerid]);
 	}
 	else if(playertextid == trunkTextItem6[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem6[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem6[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][5];
 		PlayerTextDrawShow(playerid, trunkTextItem6[playerid]);
 	}
 	else if(playertextid == trunkTextItem7[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem7[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem7[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][6];
 		PlayerTextDrawShow(playerid, trunkTextItem7[playerid]);
 	}
 	else if(playertextid == trunkTextItem8[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem8[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem8[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][7];
 		PlayerTextDrawShow(playerid, trunkTextItem8[playerid]);
 	}
 	else if(playertextid == trunkTextItem9[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem9[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem9[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][8];
 		PlayerTextDrawShow(playerid, trunkTextItem9[playerid]);
 	}
 	else if(playertextid == trunkTextItem10[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem10[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem10[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][9];
 		PlayerTextDrawShow(playerid, trunkTextItem10[playerid]);
 	}
 	else if(playertextid == trunkTextItem11[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem11[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem11[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][10];
 		PlayerTextDrawShow(playerid, trunkTextItem11[playerid]);
 	}
 	else if(playertextid == trunkTextItem12[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem12[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem12[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][11];
 		PlayerTextDrawShow(playerid, trunkTextItem12[playerid]);
 	}
 	else if(playertextid == trunkTextItem13[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextItem13[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextItem13[playerid], 1);
+		pInfo[playerid][pTrunkActiveItem] = pInfo[playerid][pTrunkItems][12];
 		PlayerTextDrawShow(playerid, trunkTextItem13[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem1[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem1[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem1[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][0];
 		PlayerTextDrawShow(playerid, trunkTextInvItem1[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem2[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem2[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem2[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][1];
 		PlayerTextDrawShow(playerid, trunkTextInvItem2[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem3[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem3[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem3[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][2];
 		PlayerTextDrawShow(playerid, trunkTextInvItem3[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem4[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem4[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem4[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][3];
 		PlayerTextDrawShow(playerid, trunkTextInvItem4[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem5[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem5[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem5[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][4];
 		PlayerTextDrawShow(playerid, trunkTextInvItem5[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem6[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem6[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem6[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][5];
 		PlayerTextDrawShow(playerid, trunkTextInvItem6[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem7[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem7[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem7[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][6];
 		PlayerTextDrawShow(playerid, trunkTextInvItem7[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem8[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem8[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem8[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][7];
 		PlayerTextDrawShow(playerid, trunkTextInvItem8[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem9[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem9[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem9[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][8];
 		PlayerTextDrawShow(playerid, trunkTextInvItem9[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem10[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem10[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem10[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][9];
 		PlayerTextDrawShow(playerid, trunkTextInvItem10[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem11[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem11[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem11[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][10];
 		PlayerTextDrawShow(playerid, trunkTextInvItem11[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem12[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem12[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem12[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][11];
 		PlayerTextDrawShow(playerid, trunkTextInvItem12[playerid]);
 	}
 	else if(playertextid == trunkTextInvItem13[playerid]) {
 	    ResetTrunkTextDrawUseBoxes(playerid);
 	    PlayerTextDrawHide(playerid, trunkTextInvItem13[playerid]);
 		PlayerTextDrawUseBox(playerid, trunkTextInvItem13[playerid], 1);
+		pInfo[playerid][pInvActiveItem] = pInfo[playerid][pInvItems][12];
 		PlayerTextDrawShow(playerid, trunkTextInvItem13[playerid]);
 	}
 	return true;
@@ -1924,22 +1988,24 @@ stock SetInventoryTextDrawValues(playerid) {
 stock SetTrunkTextDrawValues(playerid, vehicleIndex) {
 	new string[1500], storageid = vInfo[vehicleIndex][vStorage];
 	
+	pInfo[playerid][pTrunkActiveVehIndex] = vehicleIndex;
+	
 	// Überschrift setzten
 	format(string, sizeof(string), "Kofferraum - %s", GetVehicleName(vInfo[vehicleIndex][vModel]));
 	PlayerTextDrawSetString(playerid, trunkBoxHeader[playerid], string);
 	
 	// Setzt das Gewicht
-	mysql_format(dbhandle, string, sizeof(string), "SELECT `storages`.`capacity`, SUM(`items`.`weight` * `storage_items`.`amount`) AS 'weight' FROM `storages` LEFT JOIN `storage_items`\
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `storages`.`capacity`, IFNULL(SUM(`items`.`weight` * `storage_items`.`amount`), 0) AS 'weight' FROM `storages` LEFT JOIN `storage_items`\
 		ON `storages`.`id` = `storage_items`.`storage_id` LEFT JOIN `items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storages`.`id` = '%d'", storageid);
 	mysql_tquery(dbhandle, string, "SetTrunkWeights", "d", playerid);
 	
 	// Fragt die Items des Kofferraums ab
-	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`\
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`, `items`.`id`\
 	FROM `items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storage_items`.`storage_id` = '%d'", storageid);
 	mysql_tquery(dbhandle, string, "SetTrunkItems", "dd", playerid, storageid);
 
     // Fragt die Items des Spielers ab
-	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`\
+	mysql_format(dbhandle, string, sizeof(string), "SELECT `items`.`name`, `storage_items`.`amount`, `items`.`id`\
 	FROM `items` LEFT JOIN `storage_items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storage_items`.`storage_id` = '%d'", pInfo[playerid][pStorage]);
 	mysql_tquery(dbhandle, string, "SetTrunkInvItems", "dd", playerid, pInfo[playerid][pStorage]);
 	
@@ -1964,9 +2030,11 @@ function SetTrunkItems(playerid, storageid) {
 	    new amount, name[71];
 	    cache_get_value_name_int(i, "amount", amount);
 	    cache_get_value_name(i, "name", name, sizeof(name));
+	    cache_get_value_name_int(i, "id", pInfo[playerid][pTrunkItems][i]);
 	    format(query, sizeof(query), "[%d]- %s", amount, name);
 	    SetTrukItems(playerid, i, query);
 	}
+	if(pInfo[playerid][pTrunkItems][0] != -1) OnPlayerClickPlayerTextDraw(playerid, trunkTextItem1[playerid]);
 	return true;
 }
 
@@ -1988,9 +2056,11 @@ function SetTrunkInvItems(playerid, storageid) {
 	    new amount, name[71];
 	    cache_get_value_name_int(i, "amount", amount);
 	    cache_get_value_name(i, "name", name, sizeof(name));
+	    cache_get_value_name_int(i, "id", pInfo[playerid][pInvItems][i]);
 	    format(query, sizeof(query), "[%d]- %s", amount, name);
 	    SetTrukInvItems(playerid, i, query);
 	}
+	if(pInfo[playerid][pInvItems][0] != -1) OnPlayerClickPlayerTextDraw(playerid, trunkTextInvItem1[playerid]);
 	return true;
 }
 
@@ -2572,6 +2642,15 @@ stock HideTrunkTextDraws(playerid) {
 	
 	CancelSelectTextDraw(playerid);
 	pInfo[playerid][pTrunkOpend] = false;
+	
+	pInfo[playerid][pTrunkActiveItem] = -1;
+	pInfo[playerid][pInvActiveItem] = -1;
+	pInfo[playerid][pTrunkActiveVehIndex] = -1;
+	
+	for(new i; i < pInfo[playerid][pTrunkItems]; i++) {
+	    pInfo[playerid][pInvItems][i] = -1;
+		pInfo[playerid][pTrunkItems][i] = -1;
+	}
 	return true;
 }
 

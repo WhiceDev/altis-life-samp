@@ -100,7 +100,9 @@ enum E_PLAYER {
 	pInvActiveItem,
 	pTrunkActiveVehIndex,
 	pTrunkAmount,
-	pInvAmount
+	pInvAmount,
+	bool:pGarageOpend,
+	pGarageActiveVeh
 };
 new pInfo[MAX_PLAYERS][E_PLAYER];
 
@@ -129,6 +131,22 @@ enum E_VEHICLE {
 	bool:vBoot
 };
 new vInfo[MAX_VEHICLES][E_VEHICLE];
+
+enum E_GARAGE {
+	garageModel,
+	garageColor1,
+	garageColor2,
+	garageParkPrice,
+	garageSellPrice,
+	garageMaxSpeed,
+	garagePower,
+	garagePassengerSeats,
+	garageFuel,
+	garageStorage,
+	garageVehicleDBID,
+	garageStorageID
+};
+new garageInfo[13][E_GARAGE];
 
 // Farben definieren
 #define COLOR_FAIL 0xFF0000FF
@@ -2005,6 +2023,91 @@ stock SetInventoryTextDrawValues(playerid) {
 		ON `storages`.`id` = `storage_items`.`storage_id` LEFT JOIN `items` ON `items`.`id` = `storage_items`.`item_id` WHERE `storages`.`id` = '%d'", pInfo[playerid][pStorage]);
 	mysql_tquery(dbhandle, string, "SetInventoryWeights", "d", playerid);
 	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt die variablen Werte im Inventar-System
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ *
+ */
+stock SetGarageTextDrawValues(playerid) {
+    new string[500], bool:first = true;
+    for(new i = 0; i < sizeof(vInfo); i++) {
+        if(vInfo[i][vOwner] == pInfo[playerid][pDBID]) {
+        	if(first) {
+                mysql_format(dbhandle, string, sizeof(string), "AND `vehicles`.`id` NOT IN (%d", vInfo[i][vDBID]);
+				first = false;
+			} else mysql_format(dbhandle, string, sizeof(string), "%s, %d", string, vInfo[i][vDBID]);
+		}
+    }
+    if(!first) mysql_format(dbhandle, string, sizeof(string), "%s)", string);
+    
+    mysql_format(dbhandle, string, sizeof(string), "SELECT * FROM `vehicles` LEFT JOIN `vehicle_infos` ON `vehicles`.`model` = `vehicle_infos`.`model` WHERE `vehicles`.`owner` = '%d' %e LIMIT 12", pInfo[playerid][pDBID], string);
+	mysql_tquery(dbhandle, string, "SetGarageVehicles", "d", playerid);
+	
+	return true;
+}
+
+/*
+ *
+ *  Dieses Callback setzt die Fahrzeug Infos im Garagen-TextDraw
+ *  Dieses Callback benutzt den Return-Wert nicht.
+ *
+ *  @param  playerid    Die ID des Spielers
+ *
+ */
+function SetGarageVehicles(playerid) {
+
+	new string[70];
+	for(new i = 0; i < cache_num_rows(); i++) {
+		cache_get_value_name_int(i, "color1", garageInfo[i][garageColor1]);
+		cache_get_value_name_int(i, "color2", garageInfo[i][garageColor2]);
+		cache_get_value_name_int(i, "model", garageInfo[i][garageModel]);
+		cache_get_value_name_int(i, "parkPrice", garageInfo[i][garageParkPrice]);
+		cache_get_value_name_int(i, "sellPrice", garageInfo[i][garageSellPrice]);
+		cache_get_value_name_int(i, "maxSpeed", garageInfo[i][garageMaxSpeed]);
+		cache_get_value_name_int(i, "power", garageInfo[i][garagePower]);
+		cache_get_value_name_int(i, "passengerSeats", garageInfo[i][garagePassengerSeats]);
+		cache_get_value_name_int(i, "fuel", garageInfo[i][garageFuel]);
+		cache_get_value_name_int(i, "maxStorage", garageInfo[i][garageStorage]);
+		cache_get_value_name_int(i, "storage", garageInfo[i][garageStorageID]);
+		cache_get_value_name_int(i, "id", garageInfo[i][garageVehicleDBID]);
+	    
+	    format(string, sizeof(string), "%s", GetVehicleName(garageInfo[i][garageModel]));
+		SetGarageVehiclesValues(playerid, i, string);
+	}
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt die Fahrzeuge im Garagen-Text-Draw die Strings zu den Fahrzeugen
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid		Die ID des Spielers
+ *	@param  itemPosition	Die Position des Items im TextDraw
+ *  @param	query           Den zu setztenden Text
+ *
+ */
+stock SetGarageVehiclesValues(playerid, itemPosition, query[]) {
+	switch(itemPosition) {
+	    case 0: { PlayerTextDrawSetString(playerid, garageVehicle1[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle1[playerid], 1); }
+	    case 1: { PlayerTextDrawSetString(playerid, garageVehicle2[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle2[playerid], 1); }
+		case 2: { PlayerTextDrawSetString(playerid, garageVehicle3[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle3[playerid], 1); }
+		case 3: { PlayerTextDrawSetString(playerid, garageVehicle4[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle4[playerid], 1); }
+		case 4: { PlayerTextDrawSetString(playerid, garageVehicle5[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle5[playerid], 1); }
+		case 5: { PlayerTextDrawSetString(playerid, garageVehicle6[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle6[playerid], 1); }
+		case 6: { PlayerTextDrawSetString(playerid, garageVehicle7[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle7[playerid], 1); }
+		case 7: { PlayerTextDrawSetString(playerid, garageVehicle8[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle8[playerid], 1); }
+		case 8: { PlayerTextDrawSetString(playerid, garageVehicle9[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle9[playerid], 1); }
+		case 9: { PlayerTextDrawSetString(playerid, garageVehicle10[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle10[playerid], 1); }
+		case 10: { PlayerTextDrawSetString(playerid, garageVehicle11[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle11[playerid], 1); }
+		case 11: { PlayerTextDrawSetString(playerid, garageVehicle12[playerid], query); PlayerTextDrawUseBox(playerid, garageVehicle12[playerid], 1); }
+	}
 	return true;
 }
 

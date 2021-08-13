@@ -359,7 +359,7 @@ stock ShowMiningFields(playerid) {
 
 /*
  *
- *	Diese Funktion setzt die Garagen TextDraw Werte zurï¿½ck
+ *	Diese Funktion setzt die Garagen TextDraw Werte zurück
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  */
@@ -426,7 +426,7 @@ stock CreatePlayerVehicle(playerid, modelid) {
 
 /*
  *
- *	Diese Funktion erstellt ein Fahrzeug (aus der Garage) fï¿½r einen Spieler
+ *	Diese Funktion erstellt ein Fahrzeug (aus der Garage) für einen Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@params playerid    Die ID des Spielers
@@ -436,7 +436,7 @@ stock CreatePlayerGarageVehicle(playerid) {
 
 	new vehID = GetFreeVehicleEnumID(), garageIndex = pInfo[playerid][pGarageActiveVeh];
 
-	// Prï¿½fen ob maximale Anzahl an Fahrzeugen erreicht
+	// Prüfen ob maximale Anzahl an Fahrzeugen erreicht
 	if(vehID == -1) return true;
 
 	vInfo[vehID][vModel] = garageInfo[garageIndex][garageModel];
@@ -456,7 +456,7 @@ stock CreatePlayerGarageVehicle(playerid) {
 
 /*
  *
- *	Diese Funktion verkauft ein Fahrzeug fï¿½r einen Spieler
+ *	Diese Funktion verkauft ein Fahrzeug für einen Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@params playerid    Die ID des Spielers
@@ -1245,7 +1245,7 @@ CMD:kofferraum(playerid, params[]) {
 
 /*
  *
- *	Dieser Befehl ï¿½ffnet/schlieï¿½t die Garage des eigenen Fahrzeuges
+ *	Dieser Befehl öffnet/schließt die Garage des eigenen Fahrzeuges
  *	Dieser Befehl benutzt den Return-Wert nicht.
  *
  *	@param	playerid	Die ID des Spielers
@@ -1831,11 +1831,11 @@ function OnStoreItemsTrunk(playerid, vehicleIndex) {
 
 /*
  *
- *	Diese Funktion setzt die Fahrzeuginformationen im Garagen TextDraw fï¿½r ein bestimmtes Fahrzeug
+ *	Diese Funktion setzt die Fahrzeuginformationen im Garagen TextDraw für ein bestimmtes Fahrzeug
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *  @params playerid    Die ID des Spielers
- *  @params garageIndex Die ID des ausgewï¿½hlten Fahrzeuges
+ *  @params garageIndex Die ID des ausgewählten Fahrzeuges
  *
  */
 stock SetGarageVehicleValues(playerid, garageIndex) {
@@ -1894,7 +1894,11 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
 	    SCM(playerid, COLOR_WHITE, "=> Deine Daten wurden gespeichert");
 	    HideInventoryTextDraws(playerid);
 	}
-	// // Text-Draw 'Schließen' im Kofferraum-Text-Draw wurde angeklickt
+	// Text-Draw 'Schließen' im Garagen-Text-Draw wurde angeklickt
+	else if(playertextid == garageBtnClose[playerid]) {
+	    cmd_garage(playerid, "");
+	}
+	// Text-Draw 'Schließen' im Kofferraum-Text-Draw wurde angeklickt
 	else if(playertextid == trunkBtnClose[playerid]) {
 	    cmd_kofferraum(playerid, "");
 	}
@@ -1921,6 +1925,101 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     	mysql_tquery(dbhandle, query, "OnStoreItemsTrunk", "dd", playerid, vehicleIndex);
     	format(query, sizeof(query), "(%dx) Item (%d) von Kofferraum (%d) in Inventar (%d) entladen", pInfo[playerid][pInvAmount], pInfo[playerid][pInvActiveItem], vInfo[vehicleIndex][vStorage], pInfo[playerid][pStorage]);
     	SCM(playerid, -1, query);
+	}
+	// Garagen System
+	else if(playertextid == garageBtnPark[playerid]) {
+	    // Ausparken
+		cmd_garage(playerid, "");
+		CreatePlayerGarageVehicle(playerid);
+	}
+	else if(playertextid == garageBtnSell[playerid]) {
+	    // Verkaufen
+		cmd_garage(playerid, "");
+		SellPlayerGarageVehicle(playerid);
+	}
+	else if(playertextid == garageVehicle1[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle1[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle1[playerid], 1);
+		SetGarageVehicleValues(playerid, 0);
+		PlayerTextDrawShow(playerid, garageVehicle1[playerid]);
+	}
+	else if(playertextid == garageVehicle2[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle2[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle2[playerid], 1);
+		SetGarageVehicleValues(playerid, 1);
+		PlayerTextDrawShow(playerid, garageVehicle2[playerid]);
+	}
+	else if(playertextid == garageVehicle3[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle3[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle3[playerid], 1);
+		SetGarageVehicleValues(playerid, 2);
+		PlayerTextDrawShow(playerid, garageVehicle3[playerid]);
+	}
+	else if(playertextid == garageVehicle4[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle4[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle4[playerid], 1);
+		SetGarageVehicleValues(playerid, 3);
+		PlayerTextDrawShow(playerid, garageVehicle4[playerid]);
+	}
+	else if(playertextid == garageVehicle5[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle5[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle5[playerid], 1);
+		SetGarageVehicleValues(playerid, 4);
+		PlayerTextDrawShow(playerid, garageVehicle5[playerid]);
+	}
+	else if(playertextid == garageVehicle6[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle6[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle6[playerid], 1);
+		SetGarageVehicleValues(playerid, 5);
+		PlayerTextDrawShow(playerid, garageVehicle6[playerid]);
+	}
+	else if(playertextid == garageVehicle7[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle7[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle7[playerid], 1);
+		SetGarageVehicleValues(playerid, 6);
+		PlayerTextDrawShow(playerid, garageVehicle7[playerid]);
+	}
+	else if(playertextid == garageVehicle8[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle8[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle8[playerid], 1);
+		SetGarageVehicleValues(playerid, 7);
+		PlayerTextDrawShow(playerid, garageVehicle8[playerid]);
+	}
+	else if(playertextid == garageVehicle9[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle9[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle9[playerid], 1);
+		SetGarageVehicleValues(playerid, 8);
+		PlayerTextDrawShow(playerid, garageVehicle9[playerid]);
+	}
+	else if(playertextid == garageVehicle10[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle10[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle10[playerid], 1);
+		SetGarageVehicleValues(playerid, 9);
+		PlayerTextDrawShow(playerid, garageVehicle10[playerid]);
+	}
+	else if(playertextid == garageVehicle11[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle11[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle11[playerid], 1);
+		SetGarageVehicleValues(playerid, 10);
+		PlayerTextDrawShow(playerid, garageVehicle11[playerid]);
+	}
+	else if(playertextid == garageVehicle12[playerid]) {
+	    ResetGaragesTextDrawUseBoxes(playerid);
+		PlayerTextDrawHide(playerid, garageVehicle12[playerid]);
+		PlayerTextDrawUseBox(playerid, garageVehicle12[playerid], 1);
+		SetGarageVehicleValues(playerid, 11);
+		PlayerTextDrawShow(playerid, garageVehicle12[playerid]);
 	}
 	// Kofferraum Inventar Items
 	else if(playertextid == trunkTextItem1[playerid]) {
@@ -2141,6 +2240,7 @@ stock SavePlayer(playerid) {
  *
  *	@param  money   Umzuwandelnde Zahl
  *	@return Zahl als String mit ',' als Dezimal-Punkt
+ *
  */
 stock formatMoney(money) {
 	new str[24], i;
@@ -2158,6 +2258,7 @@ stock formatMoney(money) {
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param  playerid	Die ID des Spielers
+ *
  */
 stock SetInventoryTextDrawValues(playerid) {
 	// Seztzt den Konto Wert
@@ -2477,7 +2578,7 @@ stock ResetTrunkTextDrawUseBoxes(playerid) {
 
 /*
  *
- *	Diese Funktion setzt im Garagen-Text-Draw die UseBox Funktion zurï¿½ck
+ *	Diese Funktion setzt im Garagen-Text-Draw die UseBox Funktion zurück
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param	playerid		Die ID des Spielers
@@ -2901,7 +3002,7 @@ stock ShowTrunkTextDraws(playerid) {
 
 /*
  *
- *	Diese Funktion zeigt die Garagen Text-Draws fï¿½r den Spieler
+ *	Diese Funktion zeigt die Garagen Text-Draws für den Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
  *	@param  playerid	Die ID des Spielers

@@ -2762,7 +2762,7 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, garageBoxCaption[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, garageBoxCaption[playerid], 0);
 
-	garageBtnClose[playerid] = CreatePlayerTextDraw(playerid, 171.000000, 331.000000, "SCHLIESSEN");
+	garageBtnClose[playerid] = CreatePlayerTextDraw(playerid, 171.000000, 331.000000, "SCHLIE\150;EN");
 	PlayerTextDrawFont(playerid, garageBtnClose[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, garageBtnClose[playerid], 0.212500, 1.650035);
 	PlayerTextDrawTextSize(playerid, garageBtnClose[playerid], 234.500000, 13.500000);
@@ -2846,175 +2846,175 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, garageBoxListOwnVehicles[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, garageBoxListOwnVehicles[playerid], 0);
 
-	garageVehicle1[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 142.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle1[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 142.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle1[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle1[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle1[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle1[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle1[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle1[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle1[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle1[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle1[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle1[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle1[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle1[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle1[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle1[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle1[playerid], 1);
 
-	garageVehicle2[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 157.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle2[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 157.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle2[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle2[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle2[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle2[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle2[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle2[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle2[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle2[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle2[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle2[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle2[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle2[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle2[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle2[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle2[playerid], 1);
 
-	garageVehicle3[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 172.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle3[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 172.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle3[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle3[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle3[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle3[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle3[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle3[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle3[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle3[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle3[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle3[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle3[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle3[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle3[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle3[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle3[playerid], 1);
 
-	garageVehicle4[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 187.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle4[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 187.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle4[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle4[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle4[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle4[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle4[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle4[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle4[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle4[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle4[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle4[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle4[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle4[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle4[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle4[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle4[playerid], 1);
 
-	garageVehicle5[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 202.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle5[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 202.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle5[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle5[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle5[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle5[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle5[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle5[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle5[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle5[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle5[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle5[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle5[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle5[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle5[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle5[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle5[playerid], 1);
 
-	garageVehicle6[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 217.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle6[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 217.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle6[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle6[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle6[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle6[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle6[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle6[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle6[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle6[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle6[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle6[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle6[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle6[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle6[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle6[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle6[playerid], 1);
 
-	garageVehicle7[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 232.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle7[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 232.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle7[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle7[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle7[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle7[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle7[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle7[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle7[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle7[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle7[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle7[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle7[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle7[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle7[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle7[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle7[playerid], 1);
 
-	garageVehicle8[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 247.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle8[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 247.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle8[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle8[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle8[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle8[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle8[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle8[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle8[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle8[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle8[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle8[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle8[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle8[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle8[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle8[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle8[playerid], 1);
 
-	garageVehicle9[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 262.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle9[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 262.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle9[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle9[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle9[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle9[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle9[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle9[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle9[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle9[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle9[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle9[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle9[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle9[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle9[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle9[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle9[playerid], 1);
 
-	garageVehicle10[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 277.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle10[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 277.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle10[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle10[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle10[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle10[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle10[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle10[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle10[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle10[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle10[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle10[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle10[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle10[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle10[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle10[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle10[playerid], 1);
 
-	garageVehicle11[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 292.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle11[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 292.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle11[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle11[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle11[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle11[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle11[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle11[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle11[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle11[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle11[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle11[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle11[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle11[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle11[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle11[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle11[playerid], 1);
 
-	garageVehicle12[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 307.000000, "Zamak-Transporter [abgedeckt]");
+	garageVehicle12[playerid] = CreatePlayerTextDraw(playerid, 174.000000, 307.000000, "");
 	PlayerTextDrawFont(playerid, garageVehicle12[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageVehicle12[playerid], 0.195831, 1.399999);
-	PlayerTextDrawTextSize(playerid, garageVehicle12[playerid], 298.000000, 16.000000);
+	PlayerTextDrawTextSize(playerid, garageVehicle12[playerid], 298.000000, 12.000000);
 	PlayerTextDrawSetOutline(playerid, garageVehicle12[playerid], 0);
 	PlayerTextDrawSetShadow(playerid, garageVehicle12[playerid], 1);
 	PlayerTextDrawAlignment(playerid, garageVehicle12[playerid], 1);
 	PlayerTextDrawColor(playerid, garageVehicle12[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, garageVehicle12[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, garageVehicle12[playerid], -206);
-	PlayerTextDrawUseBox(playerid, garageVehicle12[playerid], 1);
+	PlayerTextDrawUseBox(playerid, garageVehicle12[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageVehicle12[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageVehicle12[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageVehicle12[playerid], 1);
 
-	garageTextParkPrice[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 142.000000, "Einstellpreis: $2,350");
+	garageTextParkPrice[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 142.000000, "Einstellpreis: $-");
 	PlayerTextDrawFont(playerid, garageTextParkPrice[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextParkPrice[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextParkPrice[playerid], 475.000000, 16.000000);
@@ -3026,9 +3026,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextParkPrice[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextParkPrice[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextParkPrice[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextParkPrice[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextParkPrice[playerid], 1);
 
-	garageTextSellPrice[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 156.000000, "Verkaufspreis: $7,500");
+	garageTextSellPrice[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 156.000000, "Verkaufspreis: $-");
 	PlayerTextDrawFont(playerid, garageTextSellPrice[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextSellPrice[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextSellPrice[playerid], 475.000000, 16.000000);
@@ -3040,9 +3040,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextSellPrice[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextSellPrice[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextSellPrice[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextSellPrice[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextSellPrice[playerid], 1);
 
-	garageTextColor1[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 170.000000, "Farbe 1: 255");
+	garageTextColor1[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 170.000000, "Farbe 1: -");
 	PlayerTextDrawFont(playerid, garageTextColor1[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextColor1[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextColor1[playerid], 475.000000, 16.000000);
@@ -3054,9 +3054,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextColor1[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextColor1[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextColor1[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextColor1[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextColor1[playerid], 1);
 
-	garageTextColor2[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 184.000000, "Farbe 2: 133");
+	garageTextColor2[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 184.000000, "Farbe 2: -");
 	PlayerTextDrawFont(playerid, garageTextColor2[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextColor2[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextColor2[playerid], 475.000000, 16.000000);
@@ -3068,9 +3068,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextColor2[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextColor2[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextColor2[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextColor2[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextColor2[playerid], 1);
 
-	garageTextMaxSpeed[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 197.000000, "Max. Geschwindigkeit: 325 km/h");
+	garageTextMaxSpeed[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 197.000000, "Max. Geschwindigkeit: - km/h");
 	PlayerTextDrawFont(playerid, garageTextMaxSpeed[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextMaxSpeed[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextMaxSpeed[playerid], 475.000000, 16.000000);
@@ -3082,9 +3082,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextMaxSpeed[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextMaxSpeed[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextMaxSpeed[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextMaxSpeed[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextMaxSpeed[playerid], 1);
 
-	garageTextPS[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 211.000000, "Pferdestärken: 350");
+	garageTextPS[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 211.000000, "Pferdest\154;rken: -");
 	PlayerTextDrawFont(playerid, garageTextPS[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextPS[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextPS[playerid], 475.000000, 16.000000);
@@ -3096,9 +3096,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextPS[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextPS[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextPS[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextPS[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextPS[playerid], 1);
 
-	garageTextPassengerSeats[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 224.000000, "Passagierplätze: 3");
+	garageTextPassengerSeats[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 224.000000, "Passagierpl\154;tze: -");
 	PlayerTextDrawFont(playerid, garageTextPassengerSeats[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextPassengerSeats[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextPassengerSeats[playerid], 475.000000, 16.000000);
@@ -3110,9 +3110,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextPassengerSeats[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextPassengerSeats[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextPassengerSeats[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextPassengerSeats[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextPassengerSeats[playerid], 1);
 
-	garageTextVehicleStorage[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 237.000000, "Kofferraumgröße: 45");
+	garageTextVehicleStorage[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 237.000000, "Kofferraumgr\168;\150;e: -");
 	PlayerTextDrawFont(playerid, garageTextVehicleStorage[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextVehicleStorage[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextVehicleStorage[playerid], 475.000000, 16.000000);
@@ -3124,9 +3124,9 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextVehicleStorage[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextVehicleStorage[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextVehicleStorage[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextVehicleStorage[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextVehicleStorage[playerid], 1);
 
-	garageTextFuel[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 250.000000, "Tankgröße: 45");
+	garageTextFuel[playerid] = CreatePlayerTextDraw(playerid, 305.000000, 250.000000, "Tankgr\168;\150;e: -");
 	PlayerTextDrawFont(playerid, garageTextFuel[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, garageTextFuel[playerid], 0.195831, 1.399999);
 	PlayerTextDrawTextSize(playerid, garageTextFuel[playerid], 475.000000, 16.000000);
@@ -3138,7 +3138,7 @@ stock LoadGarageTextDraws(playerid) {
 	PlayerTextDrawBoxColor(playerid, garageTextFuel[playerid], -206);
 	PlayerTextDrawUseBox(playerid, garageTextFuel[playerid], 0);
 	PlayerTextDrawSetProportional(playerid, garageTextFuel[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, garageTextFuel[playerid], 0);
+	PlayerTextDrawSetSelectable(playerid, garageTextFuel[playerid], 1);
 	return true;
 }
 
@@ -3179,7 +3179,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkBoxHeader[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkBoxHeader[playerid], 0);
 
-	trunkBtnClose[playerid] = CreatePlayerTextDraw(playerid, 152.000000, 362.000000, "Schliessen");
+	trunkBtnClose[playerid] = CreatePlayerTextDraw(playerid, 152.000000, 362.000000, "Schlie\150;en");
 	PlayerTextDrawFont(playerid, trunkBtnClose[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, trunkBtnClose[playerid], 0.229166, 1.600000);
 	PlayerTextDrawTextSize(playerid, trunkBtnClose[playerid], 218.500000, 13.500000);
@@ -3193,7 +3193,7 @@ stock LoadTrunkTextDraws(playerid) {
 	PlayerTextDrawSetProportional(playerid, trunkBtnClose[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, trunkBtnClose[playerid], 1);
 
-	trunkTxtWeight[playerid] = CreatePlayerTextDraw(playerid, 493.000000, 92.000000, "Weight: 198 / 200 kg");
+	trunkTxtWeight[playerid] = CreatePlayerTextDraw(playerid, 493.000000, 92.000000, "Gewicht: 198 / 200 kg");
 	PlayerTextDrawFont(playerid, trunkTxtWeight[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, trunkTxtWeight[playerid], 0.233333, 1.500000);
 	PlayerTextDrawTextSize(playerid, trunkTxtWeight[playerid], 400.000000, 17.000000);

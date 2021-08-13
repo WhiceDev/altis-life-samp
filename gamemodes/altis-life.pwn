@@ -2598,6 +2598,94 @@ stock ShowTrunkTextDraws(playerid) {
 
 /*
  *
+ *	Diese Funktion zeigt die Garagen Text-Draws f�r den Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock ShowGarageTextDraws(playerid) {
+
+    PlayerTextDrawShow(playerid, garageBoxBackground[playerid]);
+    PlayerTextDrawShow(playerid, garageBoxCaption[playerid]);
+    PlayerTextDrawShow(playerid, garageBtnClose[playerid]);
+    PlayerTextDrawShow(playerid, garageBoxOwnVehicles[playerid]);
+    PlayerTextDrawShow(playerid, garageBoxVehicleInfos[playerid]);
+    PlayerTextDrawShow(playerid, garageBtnPark[playerid]);
+    PlayerTextDrawShow(playerid, garageBtnSell[playerid]);
+    PlayerTextDrawShow(playerid, garageBoxListOwnVehicles[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle1[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle2[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle3[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle4[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle5[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle6[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle7[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle8[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle9[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle10[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle11[playerid]);
+    PlayerTextDrawShow(playerid, garageVehicle12[playerid]);
+    PlayerTextDrawShow(playerid, garageTextParkPrice[playerid]);
+    PlayerTextDrawShow(playerid, garageTextSellPrice[playerid]);
+    PlayerTextDrawShow(playerid, garageTextColor1[playerid]);
+    PlayerTextDrawShow(playerid, garageTextColor2[playerid]);
+    PlayerTextDrawShow(playerid, garageTextMaxSpeed[playerid]);
+    PlayerTextDrawShow(playerid, garageTextPS[playerid]);
+    PlayerTextDrawShow(playerid, garageTextPassengerSeats[playerid]);
+    PlayerTextDrawShow(playerid, garageTextVehicleStorage[playerid]);
+    PlayerTextDrawShow(playerid, garageTextFuel[playerid]);
+
+
+	SelectTextDraw(playerid, COLOR_ORANGE);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion versteckt die Kofferraum Text-Draws vor dem Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param  playerid	Die ID des Spielers
+ */
+stock HideGarageTextDraws(playerid) {
+
+    PlayerTextDrawHide(playerid, garageBoxBackground[playerid]);
+    PlayerTextDrawHide(playerid, garageBoxCaption[playerid]);
+    PlayerTextDrawHide(playerid, garageBtnClose[playerid]);
+    PlayerTextDrawHide(playerid, garageBoxOwnVehicles[playerid]);
+    PlayerTextDrawHide(playerid, garageBoxVehicleInfos[playerid]);
+    PlayerTextDrawHide(playerid, garageBtnPark[playerid]);
+    PlayerTextDrawHide(playerid, garageBtnSell[playerid]);
+    PlayerTextDrawHide(playerid, garageBoxListOwnVehicles[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle1[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle2[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle3[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle4[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle5[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle6[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle7[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle8[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle9[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle10[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle11[playerid]);
+    PlayerTextDrawHide(playerid, garageVehicle12[playerid]);
+    PlayerTextDrawHide(playerid, garageTextParkPrice[playerid]);
+    PlayerTextDrawHide(playerid, garageTextSellPrice[playerid]);
+    PlayerTextDrawHide(playerid, garageTextColor1[playerid]);
+    PlayerTextDrawHide(playerid, garageTextColor2[playerid]);
+    PlayerTextDrawHide(playerid, garageTextMaxSpeed[playerid]);
+    PlayerTextDrawHide(playerid, garageTextPS[playerid]);
+    PlayerTextDrawHide(playerid, garageTextPassengerSeats[playerid]);
+    PlayerTextDrawHide(playerid, garageTextVehicleStorage[playerid]);
+    PlayerTextDrawHide(playerid, garageTextFuel[playerid]);
+    
+    CancelSelectTextDraw(playerid);
+
+	return true;
+}
+
+/*
+ *
  *	Diese Funktion versteckt die Kofferraum Text-Draws vor dem Spieler
  *	Diese Funktion benutzt den Return-Wert nicht.
  *

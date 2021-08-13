@@ -414,7 +414,7 @@ stock CreatePlayerVehicle(playerid, modelid) {
 	
 	vInfo[vehID][vVehicleID] = CreateVehicle(vInfo[vehID][vModel], playerPos[0], playerPos[1] + 5, playerPos[2], playerPos[3], vInfo[vehID][vColor1], vInfo[vehID][vColor2], -1, 0);
 	
-	SetVehicleParamsEx(vInfo[vehID][vVehicleID], VEHICLE_PARAMS_ON, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
+	SetVehicleParamsEx(vInfo[vehID][vVehicleID], VEHICLE_PARAMS_ON, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
 	
 	PutPlayerInVehicle(playerid, vInfo[vehID][vVehicleID], 0);
 	

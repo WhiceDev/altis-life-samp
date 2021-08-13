@@ -359,6 +359,19 @@ stock ShowMiningFields(playerid) {
 
 /*
  *
+ *	Diese Funktion setzt die Garagen TextDraw Werte zur�ck
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ */
+stock ResetGarageTextDrawValues() {
+	for(new i = 0; i < sizeof(garageInfo[]); i++) {
+	    garageInfo[i][E_GARAGE:i] = 0;
+	}
+	return true;
+}
+
+/*
+ *
  *	Diese Funktion Speichert ein Fahrzeug in der Datenbank
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -2321,6 +2334,55 @@ stock ResetTrunkTextDrawUseBoxes(playerid) {
 	PlayerTextDrawShow(playerid, trunkTextInvItem11[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextInvItem12[playerid]);
 	PlayerTextDrawShow(playerid, trunkTextInvItem13[playerid]);
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion setzt im Garagen-Text-Draw die UseBox Funktion zur�ck
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid		Die ID des Spielers
+ *
+ */
+stock ResetGaragesTextDrawUseBoxes(playerid) {
+
+	PlayerTextDrawUseBox(playerid, garageVehicle1[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle2[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle3[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle4[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle5[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle6[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle7[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle8[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle9[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle10[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle11[playerid], 0);
+	PlayerTextDrawUseBox(playerid, garageVehicle12[playerid], 0);
+	
+	PlayerTextDrawSetString(playerid, garageTextColor1[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextColor2[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextMaxSpeed[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextPS[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextPassengerSeats[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextVehicleStorage[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextFuel[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextParkPrice[playerid], "");
+	PlayerTextDrawSetString(playerid, garageTextSellPrice[playerid], "");
+	
+	PlayerTextDrawShow(playerid, garageVehicle1[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle2[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle3[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle4[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle5[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle6[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle7[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle8[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle9[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle10[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle11[playerid]);
+	PlayerTextDrawShow(playerid, garageVehicle12[playerid]);
+
 	return true;
 }
 

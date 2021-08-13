@@ -426,6 +426,75 @@ stock CreatePlayerVehicle(playerid, modelid) {
 
 /*
  *
+ *	Diese Funktion erstellt ein Fahrzeug (aus der Garage) fï¿½r einen Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params playerid    Die ID des Spielers
+ *
+ */
+stock CreatePlayerGarageVehicle(playerid) {
+
+	new vehID = GetFreeVehicleEnumID(), garageIndex = pInfo[playerid][pGarageActiveVeh];
+
+	// Prï¿½fen ob maximale Anzahl an Fahrzeugen erreicht
+	if(vehID == -1) return true;
+
+	vInfo[vehID][vModel] = garageInfo[garageIndex][garageModel];
+	vInfo[vehID][vColor1] = garageInfo[garageIndex][garageColor1];
+	vInfo[vehID][vColor2] = garageInfo[garageIndex][garageColor2];
+	vInfo[vehID][vOwner] = pInfo[playerid][pDBID];
+	vInfo[vehID][vStorage] = garageInfo[garageIndex][garageStorageID];
+	vInfo[vehID][vBoot] = false;
+	vInfo[vehID][vDBID] = garageInfo[garageIndex][garageVehicleDBID];
+
+	vInfo[vehID][vVehicleID] = CreateVehicle(vInfo[vehID][vModel], 1474.1985, -1697.4985, 14.0469, 178.4188, vInfo[vehID][vColor1], vInfo[vehID][vColor2], -1, 0);
+
+	SetVehicleParamsEx(vInfo[vehID][vVehicleID], VEHICLE_PARAMS_ON, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
+	
+	return true;
+}
+
+/*
+ *
+ *	Diese Funktion verkauft ein Fahrzeug fï¿½r einen Spieler
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *	@params playerid    Die ID des Spielers
+ *
+ */
+stock SellPlayerGarageVehicle(playerid) {
+
+	new garageIndex = pInfo[playerid][pGarageActiveVeh];
+	new string[256];
+	
+	mysql_format(dbhandle, string, sizeof(string), "DELETE FROM `storages` WHERE `storages`.`id` = '%d'", garageInfo[garageIndex][garageStorageID]);
+	mysql_tquery(dbhandle, string);
+	
+	pInfo[playerid][pBank] += garageInfo[garageIndex][garageSellPrice];
+	SavePlayer(playerid);
+	
+	format(string, sizeof(string), "=> Dir wurden $%d auf dein Konto gutgeschrieben! (Neuer Stand: $%d)", formatMoney(garageInfo[garageIndex][garageSellPrice]), formatMoney(pInfo[playerid][pBank]));
+	SCM(playerid, COLOR_WHITE, string);
+	
+	pInfo[playerid][pGarageActiveVeh] = -1;
+	garageInfo[garageIndex][garageModel] = -1;
+	garageInfo[garageIndex][garageColor1] = -1;
+	garageInfo[garageIndex][garageColor2] = -1;
+	garageInfo[garageIndex][garageParkPrice] = -1;
+	garageInfo[garageIndex][garageSellPrice] = -1;
+	garageInfo[garageIndex][garageMaxSpeed] = -1;
+	garageInfo[garageIndex][garagePower] = -1;
+	garageInfo[garageIndex][garagePassengerSeats] = -1;
+	garageInfo[garageIndex][garageFuel] = -1;
+	garageInfo[garageIndex][garageStorage] = -1;
+	garageInfo[garageIndex][garageVehicleDBID] = -1;
+	garageInfo[garageIndex][garageStorageID] = -1;
+
+	return true;
+}
+
+/*
+ *
  *	Diese Funktion weißt dem Emum die Datenbank-ID des Fahrzeuges zu
  *	Diese Funktion benutzt den Return-Wert nicht.
  *
@@ -1171,7 +1240,32 @@ CMD:kofferraum(playerid, params[]) {
     format(string, sizeof(string), "~w~Kofferraum %s", status);
     GameTextForPlayer(playerid, string, 2000, 3);
     
-	return 1;
+	return true;
+}
+
+/*
+ *
+ *	Dieser Befehl ï¿½ffnet/schlieï¿½t die Garage des eigenen Fahrzeuges
+ *	Dieser Befehl benutzt den Return-Wert nicht.
+ *
+ *	@param	playerid	Die ID des Spielers
+ *	@param  params 		Eingegebenen Parameter
+ *
+ */
+CMD:garage(playerid, params[]) {
+	#pragma unused params
+	if(IsPlayerInAnyVehicle(playerid)) return SCM(playerid, COLOR_WHITE, "[Fehler] In einem Fahrzeug geht das nicht");
+
+    pInfo[playerid][pGarageOpend] = !pInfo[playerid][pGarageOpend];
+
+    if(pInfo[playerid][pGarageOpend]) {
+        ResetGarageTextDrawValues();
+        ShowGarageTextDraws(playerid);
+		ResetGaragesTextDrawUseBoxes(playerid);
+		SetGarageTextDrawValues(playerid);
+	}
+	else HideGarageTextDraws(playerid);
+	return true;
 }
 
 /*
@@ -1735,6 +1829,50 @@ function OnStoreItemsTrunk(playerid, vehicleIndex) {
 	ShowTrunkTextDraws(playerid);
 }
 
+/*
+ *
+ *	Diese Funktion setzt die Fahrzeuginformationen im Garagen TextDraw fï¿½r ein bestimmtes Fahrzeug
+ *	Diese Funktion benutzt den Return-Wert nicht.
+ *
+ *  @params playerid    Die ID des Spielers
+ *  @params garageIndex Die ID des ausgewï¿½hlten Fahrzeuges
+ *
+ */
+stock SetGarageVehicleValues(playerid, garageIndex) {
+
+    pInfo[playerid][pGarageActiveVeh] = garageIndex;
+
+    new string[75];
+
+	format(string, sizeof(string), "Farbe 1: %d", garageInfo[garageIndex][garageColor1]);
+	PlayerTextDrawSetString(playerid, garageTextColor1[playerid], string);
+	
+	format(string, sizeof(string), "Farbe 2: %d", garageInfo[garageIndex][garageColor2]);
+	PlayerTextDrawSetString(playerid, garageTextColor2[playerid], string);
+	
+	format(string, sizeof(string), "Einstellpreis: $%d", formatMoney(garageInfo[garageIndex][garageParkPrice]));
+	PlayerTextDrawSetString(playerid, garageTextParkPrice[playerid], string);
+	
+	format(string, sizeof(string), "Verkaufspreis: $%d", formatMoney(garageInfo[garageIndex][garageSellPrice]));
+	PlayerTextDrawSetString(playerid, garageTextSellPrice[playerid], string);
+	
+	format(string, sizeof(string), "Max. Geschwindigkeit: %d km/h", garageInfo[garageIndex][garageMaxSpeed]);
+	PlayerTextDrawSetString(playerid, garageTextMaxSpeed[playerid], string);
+	
+	format(string, sizeof(string), "Pferdest\154;rken: %d", garageInfo[garageIndex][garagePower]);
+	PlayerTextDrawSetString(playerid, garageTextPS[playerid], string);
+	
+	format(string, sizeof(string), "Passagierpl\154;tze: %d", garageInfo[garageIndex][garagePassengerSeats]);
+	PlayerTextDrawSetString(playerid, garageTextPassengerSeats[playerid], string);
+	
+	format(string, sizeof(string), "Kofferraumgr\168;\150;e: %d", garageInfo[garageIndex][garageStorage]);
+	PlayerTextDrawSetString(playerid, garageTextVehicleStorage[playerid], string);
+	
+	format(string, sizeof(string), "Tankgr\168;\150;e: %d", garageInfo[garageIndex][garageFuel]);
+	PlayerTextDrawSetString(playerid, garageTextFuel[playerid], string);
+    
+	return true;
+}
 
 /*
  *

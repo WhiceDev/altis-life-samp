@@ -1560,12 +1560,9 @@ stock CreateDatabaseTables() {
 	CreateStoragesTable();
 	CreateStorageItemsTable();
 	CreateVehicleTable();
-	
-	// Todo: Überprüfen warum es nicht funktioniert
-	//CreateTransferProcedure();
-
+	// Wirft einen MySQL Fehler, beim direkten Einfügen in SQL funktioniert es problemlos..
+	// CreateTransferProcedure();
 	CreateDefaultItems();
-	
 	return true;
 }
 
@@ -1576,7 +1573,7 @@ stock CreateDatabaseTables() {
  *
  */
 stock CreateTransferProcedure() {
-    new query[1600];
+    new query[1860];
     format(query, sizeof(query), "\
         DELIMITER $$\
 		CREATE PROCEDURE IF NOT EXISTS `storage_transfer`(\
@@ -1595,7 +1592,11 @@ stock CreateTransferProcedure() {
 	format(query, sizeof(query), "\
  		%s\
 		START TRANSACTION;\
-			SET autocommit = 0;\"\
+			SET autocommit = 0;\
+			SELECT EXISTS(SELECT `storage_items`.`amount` FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = from_storage) as FROM_STORAGE_EXISTS;\
+			SELECT EXISTS(SELECT `storage_items`.`amount` FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = into_storage) as INTO_STORAGE_EXISTS;", query);
+	format(query, sizeof(query), "\
+			%s\
 			SELECT IFNULL(`storage_items`.`amount`, -999) INTO @c1 FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = from_storage;\
 			SELECT IFNULL(`storage_items`.`amount`, -999) INTO @c2 FROM `storage_items` WHERE `storage_items`.`item_id` = item_id AND `storage_items`.`storage_id` = into_storage;", query);
 	format(query, sizeof(query), "\
@@ -1624,7 +1625,7 @@ stock CreateTransferProcedure() {
 		DELIMITER ;", query);
 
 
-	//printf("store_transfer procedure: %d", strlen(query)); // 1493
+	printf("store_transfer procedure: %d", strlen(query)); // 1493
 
 	mysql_tquery(dbhandle, query);
 }
